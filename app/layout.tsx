@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   title: "Ejendelsregisteret | Danmarks digitale tingbog for værdigenstande",
   description:
     "Registrér serienummer, kvittering og billeder på dine ejendele, så har du dokumentationen klar den dag du får brug for den.",
+  verification: { google: "6J_LIifJ_XlmKaNEE2sJEmP7wWWEOCr0yVVUr4jR2jM" },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
