@@ -8,6 +8,8 @@ import {
   getStripe,
   subscriptionPriceId,
 } from "../_shared/config.ts";
+// TEMPORARY: the student campaign. See lib/campaign.ts for how to remove it.
+import { campaignApplies, studentPriceId } from "../_shared/campaign.ts";
 
 /**
  * Opretter en Stripe Checkout Session i subscription-mode med to line items:
@@ -53,8 +55,9 @@ export default {
 
       let planId: unknown;
       let cancelTo: unknown;
+      let campaign: unknown;
       try {
-        ({ planId, cancelTo } = await req.json());
+        ({ planId, cancelTo, campaign } = await req.json());
       } catch {
         return Response.json(
           {
@@ -140,6 +143,9 @@ export default {
         );
       }
 
+      // TEMPORARY: see the CAMPAIGN block at line_items below.
+      const student = campaignApplies(campaign, planId);
+
       // Genbrug Stripe-kunden, så en afbrudt checkout ikke skaber dubletter.
       let customerId = existing?.stripe_customer_id ?? null;
       if (!customerId) {
@@ -153,11 +159,22 @@ export default {
       const session = await getStripe().checkout.sessions.create({
         mode: "subscription",
         customer: customerId,
-        line_items: [
-          // report-usage hæver den til kundens faktiske antal ejendele.
-          { price: subscriptionPriceId(planId), quantity: 1 },
-          { price: setupPriceId(planId), quantity: 1 },
-        ],
+        // ── CAMPAIGN (TEMPORARY) ────────────────────────────────────
+        // The student price: 9 kr./month and no registration fee. The fee
+        // line is left out entirely rather than discounted — then there is
+        // nothing to reconcile, and the invoice shows exactly what the
+        // customer pays.
+        //
+        // Validity is decided HERE, not in the browser: the client can send
+        // anything, and the expiry has to hold even once the link has been
+        // passed around. See _shared/campaign.ts.
+        line_items: student
+          ? [{ price: studentPriceId(), quantity: 1 }]
+          : [
+              // report-usage hæver den til kundens faktiske antal ejendele.
+              { price: subscriptionPriceId(planId), quantity: 1 },
+              { price: setupPriceId(planId), quantity: 1 },
+            ],
         // Viser feltet "Tilføj kampagnekode" i Checkout. Hører til på selve
         // sessionen — subscription_data kender ikke parameteren og afviser den.
         //
@@ -169,7 +186,13 @@ export default {
         // brugeren op uanset hvilket event der lander først.
         metadata: { user_id: userId, plan_id: planId },
         subscription_data: {
-          metadata: { user_id: userId, plan_id: planId },
+          // The campaign is recorded on the subscription, so student members
+          // can be found again in Stripe without guessing from the price.
+          metadata: {
+            user_id: userId,
+            plan_id: planId,
+            ...(student ? { campaign: "student" } : {}),
+          },
         },
         // ?checkout=ok udløser onboarding-guiden på Min side. Markøren
         // findes kun i denne ene viderestilling, så guiden vises præcis én

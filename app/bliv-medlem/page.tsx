@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { campaignFrom } from "@/lib/campaign";
 import { createClient } from "@/lib/supabase/server";
 
 import { Navbar } from "../components/Navbar";
@@ -18,6 +19,8 @@ export default async function BecomeMemberPage({
   const params = await searchParams;
   // Kommer man fra prissiden, er medlemskabet allerede valgt der.
   const skipPlanStep = params.trin === "konto";
+  // TEMPORARY: the student campaign. See lib/campaign.ts for how to remove it.
+  const campaign = campaignFrom(params.kampagne);
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
@@ -30,7 +33,11 @@ export default async function BecomeMemberPage({
       <Navbar />
       <main className="flex-1 bg-mist">
         <div className="px-6 py-16">
-          <SignupFlow signedIn={signedIn} skipPlanStep={skipPlanStep} />
+          <SignupFlow
+            signedIn={signedIn}
+            skipPlanStep={skipPlanStep}
+            campaign={campaign}
+          />
         </div>
       </main>
     </>

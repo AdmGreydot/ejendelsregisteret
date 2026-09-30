@@ -7,6 +7,7 @@ import { invokeFunction } from "@/lib/functions";
 import { createClient } from "@/lib/supabase/client";
 import { PLANS, vatLabel, type PlanId } from "@/lib/plans";
 import { userMessage } from "@/lib/errors";
+import { CAMPAIGN_PRICE, type Campaign } from "@/lib/campaign";
 import {
   EMAIL_MISMATCH,
   PASSWORD_HINT,
@@ -69,10 +70,13 @@ function AudienceLink({
 export function SignupFlow({
   signedIn,
   skipPlanStep = false,
+  campaign = null,
 }: {
   signedIn: boolean;
   /** Sat når brugeren kommer fra prissiden, hvor planen allerede er valgt. */
   skipPlanStep?: boolean;
+  /** TEMPORARY: the student campaign. See lib/campaign.ts. */
+  campaign?: Campaign | null;
 }) {
   // Medlemskabet ER audience-valget. Havde flowet sin egen planId-tilstand,
   // kunne de to nå at pege forskellige steder hen — fx hvis man skiftede i
@@ -80,6 +84,16 @@ export function SignupFlow({
   const { audience, setAudience } = useAudience();
   const planId: PlanId = audience;
   const plan = PLANS[planId];
+
+  /**
+   * The amounts this flow displays. TEMPORARY — see lib/campaign.ts.
+   *
+   * The campaign is private-only, so switching to business mid-flow puts
+   * the normal prices back. Otherwise a business customer would see the
+   * student price on screen and be charged something else by Stripe.
+   */
+  const studentPrice = campaign !== null && planId === "privat";
+  const price = studentPrice ? CAMPAIGN_PRICE : plan;
 
   const [step, setStep] = useState<Step>(
     skipPlanStep ? (signedIn ? "betaling" : "konto") : "plan",
@@ -210,7 +224,7 @@ export function SignupFlow({
 
     const { data, error: callError } = await invokeFunction<{ url?: string }>(
       "create-checkout",
-      { planId, cancelTo: "bliv-medlem" },
+      { planId, cancelTo: "bliv-medlem", campaign },
     );
 
     if (callError || !data?.url) {
@@ -299,14 +313,16 @@ export function SignupFlow({
 
               <p className="mt-5 flex items-baseline gap-1.5">
                 <span className="text-[40px] leading-none font-bold text-navy">
-                  {plan.monthlyPrice}
+                  {price.monthlyPrice}
                 </span>
                 <span className="text-[15px] font-medium text-navy">
                   kr./md.
                 </span>
               </p>
               <p className="mt-1.5 text-[13px] text-orange">
-                + {plan.setupFee} kr. ved oprettelse (én gang)
+                {studentPrice
+                  ? "Studiepris · ingen oprettelse"
+                  : `+ ${price.setupFee} kr. ved oprettelse (én gang)`}
               </p>
               <p className="mt-1 text-[12px] text-muted">
                 Alle priser {vatLabel(plan)}
@@ -348,8 +364,10 @@ export function SignupFlow({
               Opret din konto
             </h1>
             <p className="mt-1 text-[14px] text-muted">
-              {plan.name} &middot; {plan.monthlyPrice} kr./md. + {plan.setupFee}{" "}
-              kr. ved oprettelse
+              {plan.name} &middot; {price.monthlyPrice} kr./md.{" "}
+              {studentPrice
+                ? "· studiepris, ingen oprettelse"
+                : `+ ${price.setupFee} kr. ved oprettelse`}
             </p>
 
             <div className="mt-6 space-y-4">
@@ -524,17 +542,19 @@ export function SignupFlow({
               <div className="flex justify-between">
                 <dt className="text-muted">Pr. måned</dt>
                 <dd className="font-semibold text-navy">
-                  {plan.monthlyPrice} kr.
+                  {price.monthlyPrice} kr.
                 </dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-muted">Oprettelse (én gang)</dt>
-                <dd className="font-semibold text-navy">{plan.setupFee} kr.</dd>
+                <dd className="font-semibold text-navy">
+                  {studentPrice ? "Gratis" : `${price.setupFee} kr.`}
+                </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-2">
                 <dt className="font-semibold text-navy">I dag</dt>
                 <dd className="font-bold text-navy">
-                  {plan.monthlyPrice + plan.setupFee} kr.
+                  {price.monthlyPrice + price.setupFee} kr.
                 </dd>
               </div>
               <p className="pt-1 text-right text-[12px] text-muted">
