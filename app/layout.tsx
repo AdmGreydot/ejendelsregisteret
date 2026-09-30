@@ -32,10 +32,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const audience = await getAudience();
 
   return (
-    <html
-      lang="da"
-      className={`${abhaya.variable} h-full antialiased`}
-    >
+    <html lang="da" className={`${abhaya.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <StructuredData />
         <AudienceProvider initial={audience}>
