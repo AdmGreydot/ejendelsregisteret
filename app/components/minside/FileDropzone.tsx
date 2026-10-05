@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, ImageIcon, X } from "lucide-react";
+import { FileText, ImageIcon, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { HEIC_ACCEPT, toUploadable } from "@/lib/heic";
@@ -103,11 +103,15 @@ export function FileDropzone({
         try {
           file = await toUploadable(original);
         } catch {
-          setError(`"${original.name}" kunne ikke læses. Vi tager imod ${formats}.`);
+          setError(
+            `"${original.name}" kunne ikke læses. Vi tager imod ${formats}.`,
+          );
           continue;
         }
         if (file.size > maxBytes) {
-          setError(`"${file.name}" er større end ${maxBytes / 1024 / 1024} MB.`);
+          setError(
+            `"${file.name}" er større end ${maxBytes / 1024 / 1024} MB.`,
+          );
           continue;
         }
         next.push(file);
@@ -121,52 +125,55 @@ export function FileDropzone({
   const Icon = icon === "image" ? ImageIcon : FileText;
 
   return (
-    <div>
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setOver(true);
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        if (!busy) add(e.dataTransfer.files);
+      }}
+    >
+      <input
+        ref={inputRef}
+        id={id}
+        type="file"
+        accept={`${accept},${HEIC_ACCEPT}`}
+        multiple
+        disabled={busy}
+        onChange={(e) => {
+          add(e.target.files);
+          e.target.value = "";
         }}
-        onDragLeave={() => setOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setOver(false);
-          if (!busy) add(e.dataTransfer.files);
-        }}
-        className={`rounded-sm border border-dashed px-6 py-8 text-center transition-colors ${
-          over ? "border-orange bg-orange/5" : "border-line bg-mist/40"
-        } ${busy ? "opacity-60" : ""}`}
-      >
-        <Icon className="mx-auto size-6 text-muted" strokeWidth={1.5} />
-        <p className="mt-3 text-[15px] text-body">
-          {label}{" "}
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => inputRef.current?.click()}
-            className="font-semibold text-orange hover:text-orange-dark hover:underline disabled:opacity-60"
-          >
-            klik for at vælge
-          </button>
-        </p>
-        <p className="mt-1 text-[13px] text-muted">
-          {converting ? "Konverterer billede…" : hint}
-        </p>
+        className="sr-only"
+      />
 
-        <input
-          ref={inputRef}
-          id={id}
-          type="file"
-          accept={`${accept},${HEIC_ACCEPT}`}
-          multiple
-          disabled={busy}
-          onChange={(e) => {
-            add(e.target.files);
-            e.target.value = "";
-          }}
-          className="sr-only"
-        />
-      </div>
+      {files.length === 0 && (
+        <div
+          className={`rounded-sm border border-dashed px-6 py-8 text-center transition-colors ${
+            over ? "border-orange bg-orange/5" : "border-line bg-mist/40"
+          } ${busy ? "opacity-60" : ""}`}
+        >
+          <Icon className="mx-auto size-6 text-muted" strokeWidth={1.5} />
+          <p className="mt-3 text-[15px] text-body">
+            {label}{" "}
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => inputRef.current?.click()}
+              className="font-semibold text-orange hover:text-orange-dark hover:underline disabled:opacity-60"
+            >
+              klik for at vælge
+            </button>
+          </p>
+          <p className="mt-1 text-[13px] text-muted">
+            {converting ? "Konverterer billede…" : hint}
+          </p>
+        </div>
+      )}
 
       {error && <p className="mt-2 text-[13px] text-red-600">{error}</p>}
 
@@ -195,6 +202,24 @@ export function FileDropzone({
               </button>
             </li>
           ))}
+
+          {files.length < maxFiles && (
+            <li>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => inputRef.current?.click()}
+                className={`${TILE} flex flex-col items-center justify-center gap-1 border-dashed text-muted transition-colors hover:border-orange hover:text-orange disabled:opacity-50 ${
+                  over ? "border-orange bg-orange/5" : ""
+                }`}
+              >
+                <Plus className="size-5" strokeWidth={2} />
+                <span className="px-1 text-center text-[12px]">
+                  {converting ? "Konverterer…" : "Tilføj flere"}
+                </span>
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>
