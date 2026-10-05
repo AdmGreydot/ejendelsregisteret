@@ -34,7 +34,7 @@ Brug den _publishable_ nøgle. Den hemmelige service role-nøgle må aldrig få
 
 **Læs `RLS.md` inden databasen tages i brug.** Uden policies er
 `subscriptions`, `items`, `payments` og `billing_usage` læsbare på tværs af
-brugere, så snart tabellerne er eksponeret på Data API'et.
+brugere, så snart tabellerne er eksponeret på Data API'et
 
 ## Scripts
 
