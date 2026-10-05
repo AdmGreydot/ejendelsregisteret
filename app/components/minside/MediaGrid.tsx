@@ -6,12 +6,13 @@ import { useRef, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
 import { userMessage } from "@/lib/errors";
+import { HEIC_ACCEPT, toUploadable } from "@/lib/heic";
 
 const MAX_IMAGES = 6;
 const MAX_DOCUMENTS = 4;
 const MAX_BYTES = 10 * 1024 * 1024;
 
-const IMAGE_ACCEPT = "image/png,image/jpeg,image/webp";
+const IMAGE_ACCEPT = `image/png,image/jpeg,image/webp,${HEIC_ACCEPT}`;
 const DOCUMENT_ACCEPT = `${IMAGE_ACCEPT},application/pdf`;
 
 const isImageFile = (name: string) =>
@@ -19,24 +20,8 @@ const isImageFile = (name: string) =>
 
 const safeName = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
-/**
- * HEIC/HEIF er iPhones standardformat, men kan kun vises i Safari.
- *
- * Bemærk at formatet med vilje IKKE står i `accept`: netop fordi accept kun
- * nævner JPEG/PNG/WEBP, konverterer iOS selv billedet til JPEG under upload.
- * Tilføjes image/heic, holder iOS op med at konvertere og sender originalen.
- *
- * Filer valgt gennem Filer-appen eller fra en computer slipper dog udenom,
- * og bucket'ens allowed_mime_types ville afvise dem med en teknisk fejl.
- * Derfor fanges de her med en besked der siger hvad man skal gøre.
- */
-const heicMessage = (formats: string) =>
-  `Vi tager kun imod ${formats}. HEIC er iPhones eget format og kan ikke vises i de fleste browsere. Vælg billedet via Fotos-appen frem for Filer, så konverterer iOS det automatisk til JPG.`;
-
-const IMAGE_FORMATS = "PNG, JPG og WEBP";
-const DOCUMENT_FORMATS = "PNG, JPG, WEBP og PDF";
-
-const isHeic = (name: string) => /\.hei[cf]$/i.test(name.trim());
+const IMAGE_FORMATS = "PNG, JPG, WEBP og HEIC";
+const DOCUMENT_FORMATS = "PNG, JPG, WEBP, HEIC og PDF";
 
 const TILE =
   "relative size-36 overflow-hidden rounded-sm border border-line bg-mist";
@@ -174,9 +159,12 @@ export function MediaGrid({
     const supabase = createClient();
 
     try {
-      for (const file of Array.from(files).slice(0, room)) {
-        if (isHeic(file.name)) {
-          setError(heicMessage(formats));
+      for (const original of Array.from(files).slice(0, room)) {
+        let file: File;
+        try {
+          file = await toUploadable(original);
+        } catch {
+          setError(`"${original.name}" kunne ikke læses. Vi tager imod ${formats}.`);
           continue;
         }
         if (file.size > MAX_BYTES) {

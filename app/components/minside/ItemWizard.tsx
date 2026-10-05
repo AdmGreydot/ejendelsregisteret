@@ -441,7 +441,7 @@ export function ItemWizard({
                         accept="image/png,image/jpeg,image/webp"
                         maxFiles={6}
                         maxBytes={10 * MB}
-                        formats="PNG, JPG og WEBP"
+                        formats="PNG, JPG, WEBP og HEIC"
                         label="Træk billeder herind, eller"
                         hint="Maks 6 billeder · 10 MB pr. stk."
                         icon="image"
@@ -468,7 +468,7 @@ export function ItemWizard({
                         accept="image/png,image/jpeg,image/webp,application/pdf"
                         maxFiles={4}
                         maxBytes={10 * MB}
-                        formats="PNG, JPG, WEBP og PDF"
+                        formats="PNG, JPG, WEBP, HEIC og PDF"
                         label="Træk kvittering herind, eller"
                         hint="Maks 4 filer · 10 MB pr. stk."
                         icon="document"

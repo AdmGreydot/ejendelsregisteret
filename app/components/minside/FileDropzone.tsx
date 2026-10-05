@@ -3,11 +3,7 @@
 import { FileText, ImageIcon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-/** Se MediaGrid for hvorfor HEIC bevidst ikke står i `accept`. */
-const heicMessage = (formats: string) =>
-  `Vi tager kun imod ${formats}. HEIC er iPhones eget format og kan ikke vises i de fleste browsere. Vælg billedet via Fotos-appen frem for Filer, så konverterer iOS det automatisk til JPG.`;
-
-const isHeic = (name: string) => /\.hei[cf]$/i.test(name.trim());
+import { HEIC_ACCEPT, toUploadable } from "@/lib/heic";
 
 /** Samme flise som MediaGrid, så oprettelse og redigering ser ens ud. */
 const TILE =
@@ -86,26 +82,38 @@ export function FileDropzone({
   const inputRef = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [converting, setConverting] = useState(false);
+  const busy = disabled || converting;
 
-  function add(incoming: FileList | null) {
+  // HEIC is converted here rather than at upload, so the preview tile can
+  // show it — browsers other than Safari cannot render HEIC.
+  async function add(incoming: FileList | null) {
     if (!incoming) return;
     setError(null);
+    setConverting(true);
 
     const next = [...files];
-    for (const file of Array.from(incoming)) {
-      if (next.length >= maxFiles) {
-        setError(`Højst ${maxFiles} filer.`);
-        break;
+    try {
+      for (const original of Array.from(incoming)) {
+        if (next.length >= maxFiles) {
+          setError(`Højst ${maxFiles} filer.`);
+          break;
+        }
+        let file: File;
+        try {
+          file = await toUploadable(original);
+        } catch {
+          setError(`"${original.name}" kunne ikke læses. Vi tager imod ${formats}.`);
+          continue;
+        }
+        if (file.size > maxBytes) {
+          setError(`"${file.name}" er større end ${maxBytes / 1024 / 1024} MB.`);
+          continue;
+        }
+        next.push(file);
       }
-      if (isHeic(file.name)) {
-        setError(heicMessage(formats));
-        continue;
-      }
-      if (file.size > maxBytes) {
-        setError(`"${file.name}" er større end ${maxBytes / 1024 / 1024} MB.`);
-        continue;
-      }
-      next.push(file);
+    } finally {
+      setConverting(false);
     }
     onChange(next);
   }
@@ -123,33 +131,35 @@ export function FileDropzone({
         onDrop={(e) => {
           e.preventDefault();
           setOver(false);
-          if (!disabled) add(e.dataTransfer.files);
+          if (!busy) add(e.dataTransfer.files);
         }}
         className={`rounded-sm border border-dashed px-6 py-8 text-center transition-colors ${
           over ? "border-orange bg-orange/5" : "border-line bg-mist/40"
-        } ${disabled ? "opacity-60" : ""}`}
+        } ${busy ? "opacity-60" : ""}`}
       >
         <Icon className="mx-auto size-6 text-muted" strokeWidth={1.5} />
         <p className="mt-3 text-[15px] text-body">
           {label}{" "}
           <button
             type="button"
-            disabled={disabled}
+            disabled={busy}
             onClick={() => inputRef.current?.click()}
             className="font-semibold text-orange hover:text-orange-dark hover:underline disabled:opacity-60"
           >
             klik for at vælge
           </button>
         </p>
-        <p className="mt-1 text-[13px] text-muted">{hint}</p>
+        <p className="mt-1 text-[13px] text-muted">
+          {converting ? "Konverterer billede…" : hint}
+        </p>
 
         <input
           ref={inputRef}
           id={id}
           type="file"
-          accept={accept}
+          accept={`${accept},${HEIC_ACCEPT}`}
           multiple
-          disabled={disabled}
+          disabled={busy}
           onChange={(e) => {
             add(e.target.files);
             e.target.value = "";

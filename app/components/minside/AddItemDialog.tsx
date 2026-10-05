@@ -328,9 +328,9 @@ export function AddItemDialog({
                   accept="image/png,image/jpeg,image/webp"
                   maxFiles={6}
                   maxBytes={10 * MB}
-                  formats="PNG, JPG og WEBP"
+                  formats="PNG, JPG, WEBP og HEIC"
                   label="Træk billeder herind, eller"
-                  hint="PNG, JPG op til 10 MB · Maks 6 billeder"
+                  hint="PNG, JPG, HEIC op til 10 MB · Maks 6 billeder"
                   icon="image"
                   files={images}
                   onChange={setImages}
@@ -352,9 +352,9 @@ export function AddItemDialog({
                   accept="image/png,image/jpeg,image/webp,application/pdf"
                   maxFiles={4}
                   maxBytes={10 * MB}
-                  formats="PNG, JPG, WEBP og PDF"
+                  formats="PNG, JPG, WEBP, HEIC og PDF"
                   label="Træk kvitteringsfoto herind, eller"
-                  hint="PNG, JPG, PDF · Maks 4 filer"
+                  hint="PNG, JPG, HEIC, PDF · Maks 4 filer"
                   icon="document"
                   files={documents}
                   onChange={setDocuments}
