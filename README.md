@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Åbn [http://localhost:3000](http://localhost:3000).
+Åbn [http://localhost:3000](http://localhost:3000)
 
 Kræver en `.env.local` med:
 
@@ -20,17 +20,17 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
-Brug den *publishable* nøgle. Den hemmelige service role-nøgle må aldrig få
+Brug den _publishable_ nøgle. Den hemmelige service role-nøgle må aldrig få
 `NEXT_PUBLIC_`-prefiks — alt med det prefiks sendes til browseren.
 
 ## Dokumentation
 
-| Dokument | Indhold |
-| --- | --- |
-| [supabase/README.md](supabase/README.md) | Stripe-opsætning, priser, faktureringsfrekvens |
-| [supabase/RLS.md](supabase/RLS.md) | Row level security-policies for alle tabeller |
-| [supabase/DEPLOY.md](supabase/DEPLOY.md) | Opret, deploy og kald edge functions |
-| [supabase/database.md](supabase/database.md) | Skemaoversigt over de 8 tabeller |
+| Dokument                                     | Indhold                                        |
+| -------------------------------------------- | ---------------------------------------------- |
+| [supabase/README.md](supabase/README.md)     | Stripe-opsætning, priser, faktureringsfrekvens |
+| [supabase/RLS.md](supabase/RLS.md)           | Row level security-policies for alle tabeller  |
+| [supabase/DEPLOY.md](supabase/DEPLOY.md)     | Opret, deploy og kald edge functions           |
+| [supabase/database.md](supabase/database.md) | Skemaoversigt over de 8 tabeller               |
 
 **Læs `RLS.md` inden databasen tages i brug.** Uden policies er
 `subscriptions`, `items`, `payments` og `billing_usage` læsbare på tværs af
