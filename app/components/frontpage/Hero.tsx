@@ -48,10 +48,10 @@ export function Hero({ plan }: { plan: Plan }) {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/bliv-medlem"
+            href="/priser"
             className="inline-flex h-12 items-center gap-2 rounded-sm bg-orange px-8 text-[16px] font-bold text-white transition-colors hover:bg-orange-dark"
           >
-            Opret dig
+            Se hvordan
             <ArrowRight className="size-4" strokeWidth={2.5} />
           </Link>
           <Link

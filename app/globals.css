@@ -72,17 +72,10 @@ body {
 .photo-tools {
   background-color: #1c1a20;
 
-  /* Teksten står til venstre, så mørkningen aftager mod højre hvor
-     boremaskinen er. Billedfilen er spejlvendt netop derfor: i originalen
-     lå boremaskinen i venstre side, altså under teksten og i den mørkeste
-     del af gradienten. Skiftes filen ud, skal motivet ligge til højre. */
+  /* Text on both sides (brand left, pitch right), so the darkening is
+     even across the whole photo rather than fading towards one side. */
   background-image:
-    linear-gradient(
-      100deg,
-      rgba(18, 16, 22, 0.75) 0%,
-      rgba(18, 16, 22, 0.4) 55%,
-      rgba(18, 16, 22, 0.1) 100%
-    ),
+    linear-gradient(rgba(18, 16, 22, 0.65), rgba(18, 16, 22, 0.75)),
     url("/images/drill.png");
   background-size: cover;
   background-position: center;
@@ -102,6 +95,24 @@ body {
   background-size: cover;
 
   background-position: center 52%;
+}
+
+/* "Se hvordan" header: the same photo as the frontpage — someone with a
+   phone among cameras fits "tag billeder". Text and step cards sit on the
+   left, so the navy darkening is heaviest there and lifts towards the
+   right where the hands and phone are. */
+.photo-howto {
+  background-color: #1c2d4f;
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(28, 45, 79, 0.92) 0%,
+      rgba(28, 45, 79, 0.8) 50%,
+      rgba(28, 45, 79, 0.55) 100%
+    ),
+    url("/images/header-image.jpeg");
+  background-size: cover;
+  background-position: center;
 }
 
 /* Produktbillede uden tekst ovenpå — ingen mørkning.

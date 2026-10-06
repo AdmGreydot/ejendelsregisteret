@@ -14,14 +14,14 @@ export function ProtectBanner() {
           </h2>
 
           <p className="mt-6 text-[16px] leading-[1.75] text-white/80">
-            Forsikringen beder om kvittering og serienummer, også på ting
-            du købte for fem år siden. Er papiret væk, falder erstatningen. Her
+            Forsikringen beder om kvittering og serienummer, også på ting du
+            købte for fem år siden. Er papiret væk, falder erstatningen. Her
             ligger det samlet, klar til at sende videre samme dag.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
             <a
-              href="/bliv-medlem"
+              href="/priser"
               className="inline-flex h-11 items-center rounded-sm bg-orange px-7 text-[16px] font-medium text-white transition-colors hover:bg-orange-dark"
             >
               Beskyt dine ting

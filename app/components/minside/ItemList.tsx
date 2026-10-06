@@ -296,7 +296,14 @@ export function ItemList({
 
             {/* Hovedet: miniature ved siden af navn og status. */}
             <div className="flex gap-4 px-4 pt-4">
-              <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-mist text-muted">
+              {/* The thumbnail toggles the details too, like "Vis detaljer". */}
+              <button
+                type="button"
+                onClick={() => toggle(item.id)}
+                aria-expanded={isOpen}
+                aria-label={`${isOpen ? "Skjul" : "Vis"} detaljer for ${item.name}`}
+                className="relative flex size-20 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm bg-mist text-muted transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+              >
                 {item.imageUrl ? (
                   <Image
                     src={item.imageUrl}
@@ -308,7 +315,7 @@ export function ItemList({
                 ) : (
                   <Package className="size-7" strokeWidth={1.25} />
                 )}
-              </span>
+              </button>
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">

@@ -12,9 +12,9 @@ export function LostSomething() {
             Erstatning er ikke det samme som at få tingen tilbage. <br />
             Ejendelsregisteret samarbejder med{" "}
             <strong className="font-semibold">Hittegodscentralen.dk</strong>,
-            Danmarks nationale hittegodsdatabase. Når du har mistet noget, kan
-            du oprette en efterlysning der, og vi krydstjekker automatisk mod
-            dit register.
+            <br />
+            Når du har mistet noget, kan du oprette en efterlysning der, og vi
+            krydstjekker automatisk mod dit register.
           </p>
         </div>
 

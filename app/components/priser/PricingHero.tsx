@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { invokeFunction } from "@/lib/functions";
-import { PLANS, steps, type PlanId } from "@/lib/plans";
+import { PLANS, type PlanId } from "@/lib/plans";
 
 import type { SubscriptionStatus } from "@/lib/subscription";
 
+import { HowToShort } from "../howto/HowToShort";
 import { AcceptTerms, TERMS_REQUIRED } from "../legal/AcceptTerms";
 import { useAudience } from "../AudienceProvider";
 import { PlanCard } from "./PlanCard";
@@ -78,13 +79,15 @@ export function PricingHero({
         </h1>
         <p className="mt-4 text-[16px] text-navy"></p>
 
-        <div className="mt-4 flex justify-center">
+        {/* Stretched so the plan card and the guide are the same height. */}
+        <div className="mt-4 flex flex-col items-center gap-8 lg:flex-row lg:items-stretch lg:justify-center">
           <PlanCard
             plan={plan}
             onSelect={handleSelect}
             pending={pending}
             status={status}
           />
+          <HowToShort audience={audience} />
         </div>
 
         {paysHere && (
@@ -102,27 +105,6 @@ export function PricingHero({
             {error}
           </p>
         )}
-
-        <h2 className="mt-8 font-display text-[24px] font-normal text-navy">
-          Sådan fungerer det
-        </h2>
-
-        <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {steps(plan).map((step, index) => (
-            <li
-              key={step.title}
-              className="rounded-sm border border-line bg-white px-4 py-6 text-center"
-            >
-              <span className="mx-auto flex size-8 items-center justify-center rounded-full bg-navy text-[15px] font-bold text-white">
-                {index + 1}
-              </span>
-              <p className="mt-3 text-[14px] font-bold text-navy">
-                {step.title}
-              </p>
-              <p className="mt-1 text-[13px] text-muted">{step.body}</p>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );

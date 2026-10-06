@@ -23,10 +23,10 @@ export function SerialSection() {
 
           <div className="mt-9 flex flex-wrap gap-3">
             <a
-              href="/bliv-medlem"
+              href="/se-hvordan"
               className="inline-flex h-11 items-center rounded-sm bg-orange px-7 text-[16px] font-medium text-white transition-colors hover:bg-orange-dark"
             >
-              Kom i gang
+              Se hvordan
             </a>
             <a
               href="/priser"
