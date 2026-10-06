@@ -11,6 +11,7 @@ npm install
 npm run dev
 ```
 
+
 Åbn [http://localhost:3000](http://localhost:3000).
 
 Kræver en `.env.local` med:
