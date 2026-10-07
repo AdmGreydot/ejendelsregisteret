@@ -77,7 +77,7 @@ export function BusinessHero() {
           </div>
         </div>
 
-        <dl className="mt-14 ml-auto flex gap-8 justify-between  ">
+        <dl className="mt-14 ml-auto flex flex-col gap-6 sm:flex-row sm:gap-8 sm:justify-between">
           {stats.map((stat) => (
             <div key={stat.label}>
               <dt className="font-display text-[26px] font-bold text-white">
