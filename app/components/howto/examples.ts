@@ -49,7 +49,7 @@ export const EXAMPLES = {
     body: "Når du taster *#06#, vises en række numre. Det er KUN IMEI-nummeret der skal registreres.",
     photos: [
       {
-        src: `${IMG}/iphone-imei.jpg`,
+        src: `${IMG}/iphone-imei.jpeg`,
         alt: "iPhone der viser IMEI-nummeret efter *#06#",
       },
     ],

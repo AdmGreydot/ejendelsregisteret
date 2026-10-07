@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Navbar } from "../components/Navbar";
 import { ExampleCard } from "../components/howto/ExampleCard";
 import { EXAMPLES, LOOKUP_SCREENSHOT } from "../components/howto/examples";
+import { HowToPlanCard } from "../components/howto/HowToPlanCard";
 
 export const metadata: Metadata = {
   title: "Se hvordan du opretter dine ejendele | Ejendelsregisteret",
@@ -28,12 +29,10 @@ const STEPS = [
     body: "Af den ejendel du ønsker at oprette: hele tingen og de detaljer der gør den til din.",
   },
   {
-    icon: ScanLine,
     title: "Fotografér serienummeret",
     body: "Mærkat, typeskilt eller stempel. Tæt nok på til at nummeret kan læses.",
   },
   {
-    icon: Hash,
     title: "Registrér kun nummeret",
     body: "Kun selve serienummeret skal skrives ind. Ikke typenummer og andre tal.",
   },
@@ -53,48 +52,50 @@ export default function SeeHowPage() {
       <main className="flex-1">
         {/* Intro and the three steps */}
         <section className="photo-howto">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.25em] text-orange">
-              Se hvordan
-            </p>
-            <h1 className="mt-4 max-w-2xl font-display text-[36px] leading-[1.1] font-normal text-white sm:text-[50px]">
-              Tag billeder af det du vil oprette i din{" "}
-              <em className="font-accent text-orange">inventarliste</em>
-            </h1>
-            <p className="mt-5 max-w-xl text-[17px] leading-[1.7] text-white/75">
-              Tre ting, og ejendelen er klar til forsikringen, findbar hvis den
-              forsvinder, og klar til at blive overdraget når du sælger.
-            </p>
+          <div className="mx-auto max-w-6xl flex flex-col items-center gap-10 px-4 py-10 sm:px-6  lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.25em] text-orange">
+                Se hvordan
+              </p>
+              <h1 className="mt-4 max-w-2xl font-display text-[36px] leading-[1.1] font-normal text-white sm:text-[50px]">
+                Tag billeder af det du vil oprette i din{" "}
+                <em className="font-accent text-orange">inventarliste</em>
+              </h1>
+              <p className="mt-5 max-w-xl text-[17px] leading-[1.7] text-white/75">
+                Tre ting, og ejendelen er klar til forsikringen, findbar hvis
+                den forsvinder, og klar til at blive overdraget når du sælger.
+              </p>
 
-            <ol className="mt-12 grid gap-4 md:grid-cols-3">
-              {STEPS.map((step, index) => (
-                <li
-                  key={step.title}
-                  className="rounded-sm border border-white/15 bg-navy/50 px-6 py-6 backdrop-blur-sm"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-10 items-center justify-center rounded-full bg-orange text-white">
-                      <step.icon className="size-5" strokeWidth={2} />
-                    </span>
-                    <span className="font-display text-[32px] leading-none font-bold text-white/15">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <p className="mt-5 font-display text-[20px] font-bold text-white">
-                    {step.title}
-                  </p>
-                  <p className="mt-1.5 text-[14.5px] leading-[1.65] text-white/65">
-                    {step.body}
-                  </p>
-                </li>
-              ))}
-            </ol>
+              <ol className="mt-12 max-w-xl rounded-sm ">
+                {STEPS.map((step) => (
+                  <li
+                    key={step.title}
+                    className=" bg-navy/50 px-6 py-4 backdrop-blur-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      {step.icon && (
+                        <span className="flex size-10 items-center justify-center rounded-full bg-orange text-white">
+                          <step.icon className="size-5" strokeWidth={2} />
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-5 font-display text-[20px] font-bold text-white">
+                      {step.title}
+                    </p>
+                    <p className="mt-1.5 text-[14.5px] leading-[1.65] text-white/65">
+                      {step.body}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <HowToPlanCard />
           </div>
         </section>
 
         {/* Examples */}
         <section className="bg-mist">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 ">
             <div className="max-w-2xl">
               <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-orange">
                 Eksempler

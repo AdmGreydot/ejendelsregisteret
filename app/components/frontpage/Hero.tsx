@@ -48,7 +48,7 @@ export function Hero({ plan }: { plan: Plan }) {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/priser"
+            href="/se-hvordan"
             className="inline-flex h-12 items-center gap-2 rounded-sm bg-orange px-8 text-[16px] font-bold text-white transition-colors hover:bg-orange-dark"
           >
             Se hvordan

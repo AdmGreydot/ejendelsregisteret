@@ -7,12 +7,16 @@ import { checkoutLabel, type SubscriptionStatus } from "@/lib/subscription";
 export function PlanCard({
   plan,
   onSelect,
-  pending,
+  href,
+  pending = false,
   status,
 }: {
   plan: Plan;
-  onSelect: (planId: Plan["id"]) => void;
-  pending: boolean;
+  /** Starts checkout. Leave out and pass `href` to link elsewhere instead. */
+  onSelect?: (planId: Plan["id"]) => void;
+  /** Renders the call to action as a link, e.g. from a server component. */
+  href?: string;
+  pending?: boolean;
   status: SubscriptionStatus;
 }) {
   const dark = plan.theme === "dark";
@@ -83,25 +87,36 @@ export function PlanCard({
         ))}
       </ul>
 
-      <button
-        type="button"
-        onClick={() => onSelect(plan.id)}
-        disabled={pending || hasSubscription}
-        title={
-          hasSubscription ? "Du har allerede et aktivt medlemskab" : undefined
-        }
-        className={`mt-7 h-11 w-full rounded-sm text-[15px] font-bold transition-colors ${
-          hasSubscription
-            ? "cursor-not-allowed bg-line text-muted"
-            : `text-white ${dark ? "bg-orange hover:bg-orange-dark" : "bg-navy hover:bg-navy/90"} disabled:opacity-70`
-        }`}
-      >
-        {hasSubscription
-          ? "Du er allerede medlem"
-          : pending
-            ? "Et øjeblik…"
-            : checkoutLabel(status)}
-      </button>
+      {href && !hasSubscription ? (
+        <Link
+          href={href}
+          className={`mt-7 flex h-11 w-full items-center justify-center rounded-sm text-[15px] font-bold text-white transition-colors ${
+            dark ? "bg-orange hover:bg-orange-dark" : "bg-navy hover:bg-navy/90"
+          }`}
+        >
+          {checkoutLabel(status)}
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => onSelect?.(plan.id)}
+          disabled={pending || hasSubscription}
+          title={
+            hasSubscription ? "Du har allerede et aktivt medlemskab" : undefined
+          }
+          className={`mt-7 h-11 w-full rounded-sm text-[15px] font-bold transition-colors ${
+            hasSubscription
+              ? "cursor-not-allowed bg-line text-muted"
+              : `text-white ${dark ? "bg-orange hover:bg-orange-dark" : "bg-navy hover:bg-navy/90"} disabled:opacity-70`
+          }`}
+        >
+          {hasSubscription
+            ? "Du er allerede medlem"
+            : pending
+              ? "Et øjeblik…"
+              : checkoutLabel(status)}
+        </button>
+      )}
 
       {hasSubscription && (
         <p

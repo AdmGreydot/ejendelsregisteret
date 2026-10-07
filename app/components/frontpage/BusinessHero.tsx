@@ -28,22 +28,22 @@ const SOURCE_URL =
  */
 export function BusinessHero() {
   return (
-    <section className="photo-tools">
+    <section className="photo-tools h-[60vh] flex flex-col align-center justify-center">
       <div className="mx-auto max-w-6xl px-6 py-8">
         {/*
           Lockup first in the DOM so the h1 comes before the h2, and so it
           sits on top on a phone.
         */}
-        <div className="grid gap-8 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-12">
-          <div>
+        <div className="grid gap-8 lg:grid-cols-[auto_1fr] lg:gap-12">
+          <div className="flex flex-col lg:items-start">
             <h1 className="m-0 w-fit">
-              <span className="block text-center text-[clamp(39px,5vw,59px)] leading-none text-white">
+              <span className="block  text-[46px] leading-none text-white">
                 Inventarlisten
               </span>
-              <span className="block text-center text-[24px] tracking-normal text-[#ef7628]">
+              <em className="font-accent  text-[32px] text-orange">
                 en del af
-              </span>
-              <span className="block text-[46px] leading-none text-white">
+              </em>
+              <span className="block mt-5 text-[46px] leading-none text-white">
                 Ejendelsregisteret
               </span>
             </h1>
@@ -59,18 +59,12 @@ export function BusinessHero() {
               <em className="font-accent text-orange">samlet ét sted</em>
             </h2>
 
-            <p className="mt-6 max-w-lg text-[16px] leading-[1.75] text-white/80 lg:ml-auto">
-              Boremaskiner, kompressorer, lasere og elværktøj. Registrér
-              serienumrene, gem kvitteringerne og tag billederne. Klar til
-              forsikring, tyveri og transport.
-            </p>
-
             <div className="mt-9 flex flex-wrap gap-3 lg:justify-end">
               <Link
-                href="/bliv-medlem"
+                href="/se-hvordan"
                 className="inline-flex h-11 items-center gap-2 rounded-sm bg-orange px-7 text-[16px] font-medium text-white transition-colors hover:bg-orange-dark"
               >
-                Opret virksomhedsprofil
+                Se hvordan
                 <ArrowRight className="size-4" strokeWidth={2.5} />
               </Link>
               <Link
@@ -83,13 +77,13 @@ export function BusinessHero() {
           </div>
         </div>
 
-        <dl className="mt-14 ml-auto grid max-w-2xl gap-8 sm:grid-cols-3 lg:text-right">
+        <dl className="mt-14 ml-auto flex gap-8 justify-between  ">
           {stats.map((stat) => (
             <div key={stat.label}>
               <dt className="font-display text-[26px] font-bold text-white">
                 {stat.value}
               </dt>
-              <dd className="mt-1 text-[13px] leading-snug text-white/60">
+              <dd className="mt-1 text-[13px] leading-snug text-white/60 truncate">
                 {stat.label}
               </dd>
             </div>
