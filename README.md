@@ -6,6 +6,7 @@ Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 · Supabase (auth, databa
 
 ## Kom i gang
 
+
 ```bash
 npm install
 npm run dev
