@@ -28,7 +28,7 @@ const SOURCE_URL =
  */
 export function BusinessHero() {
   return (
-    <section className="photo-tools h-[60vh] flex flex-col align-center justify-center">
+    <section className="photo-tools min-h-[60vh] flex flex-col align-center justify-center">
       <div className="mx-auto max-w-6xl px-6 py-8">
         {/*
           Lockup first in the DOM so the h1 comes before the h2, and so it
