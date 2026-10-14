@@ -22,6 +22,8 @@ export function StructuredData() {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organisation`,
         name: COMPANY.service,
+        // The former brand, so Google treats searches for it as this site.
+        alternateName: COMPANY.formerNames,
         legalName: COMPANY.legalName,
         url: SITE_URL,
         logo: `${SITE_URL}/images/logo-ejendel.png`,
@@ -48,6 +50,7 @@ export function StructuredData() {
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: COMPANY.service,
+        alternateName: COMPANY.formerNames,
         inLanguage: "da-DK",
         publisher: { "@id": `${SITE_URL}/#organisation` },
         // Serienummeropslaget er sitets egen søgefunktion. Uden den her

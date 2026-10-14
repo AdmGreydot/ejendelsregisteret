@@ -3,6 +3,7 @@ import { Abhaya_Libre } from "next/font/google";
 import "./globals.css";
 
 import { getAudience } from "@/lib/audience";
+import { COMPANY } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site";
 
 import { AudienceProvider } from "./components/AudienceProvider";
@@ -15,6 +16,11 @@ const abhaya = Abhaya_Libre({
   subsets: ["latin"],
 });
 
+// Both names, because people still search for "Inventarlisten".
+const TITLE = "Ejendelsregisteret – tidligere Inventarlisten";
+const DESCRIPTION =
+  "Inventarlisten er nu Ejendelsregisteret. Registrér serienummer, kvittering og billeder på dine ejendele, så har du dokumentationen klar den dag du får brug for den.";
+
 export const metadata: Metadata = {
   /**
    * Uden metadataBase bliver Open Graph-billeder og canonical-links til
@@ -23,9 +29,17 @@ export const metadata: Metadata = {
    */
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
-  title: "Ejendelsregisteret | Danmarks digitale tingbog for værdigenstande",
-  description:
-    "Registrér serienummer, kvittering og billeder på dine ejendele, så har du dokumentationen klar den dag du får brug for den.",
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: COMPANY.service,
+  openGraph: {
+    type: "website",
+    locale: "da_DK",
+    url: "/",
+    siteName: COMPANY.service,
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

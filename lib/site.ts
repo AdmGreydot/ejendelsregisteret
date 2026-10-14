@@ -11,8 +11,10 @@
  * peger den på ejendelsregisteret.dk mens sitet kører på www-varianten,
  * udpeger vi et kanonisk domæne der omdirigerer, og det koster.
  */
+// The live site answers on www; the bare domain 308s there. Defaulting to
+// the bare domain put a redirecting URL in canonical, sitemap and robots.txt.
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ejendelsregisteret.dk"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ejendelsregisteret.dk"
 ).replace(/\/$/, "");
 
 /**

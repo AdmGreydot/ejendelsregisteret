@@ -10,6 +10,8 @@
 export const COMPANY = {
   /** Tjenestens navn udadtil. */
   service: "Ejendelsregisteret",
+  /** The former brand and its domain, now part of the service. */
+  formerNames: ["Inventarlisten", "inventarlisten.dk"],
   /** Den juridiske enhed bag. */
   legalName: "Greydot",
   cvr: "34399131",
@@ -31,6 +33,7 @@ export const FOOTER_NAV = [
   { label: "Forside", href: "/" },
   { label: "Slå serienummer op", href: "/serienummer" },
   { label: "Guide", href: "/guide" },
+  { label: "Inventarliste", href: "/inventarliste" },
   { label: "Priser", href: "/priser" },
   { label: "Bliv medlem", href: "/bliv-medlem" },
   { label: "Kontakt", href: "/kontakt" },
