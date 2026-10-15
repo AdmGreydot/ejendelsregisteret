@@ -17,6 +17,7 @@ import {
   validatePassword,
 } from "@/lib/password";
 
+import { HowToShort } from "../howto/HowToShort";
 import { AcceptTerms, TERMS_REQUIRED } from "../legal/AcceptTerms";
 import { useAudience, type Audience } from "../AudienceProvider";
 
@@ -94,6 +95,14 @@ export function SignupFlow({
    */
   const studentPrice = campaign !== null && planId === "privat";
   const price = studentPrice ? CAMPAIGN_PRICE : plan;
+
+  /**
+   * TEMPORARY: the campaign link lands here instead of on /priser, so the
+   * "Se hvordan" guide that sits next to the plan on /priser is shown here
+   * too. Otherwise a student picks a plan without ever seeing what the
+   * register does. See lib/campaign.ts.
+   */
+  const showGuide = campaign !== null;
 
   const [step, setStep] = useState<Step>(
     skipPlanStep ? (signedIn ? "betaling" : "konto") : "plan",
@@ -239,7 +248,10 @@ export function SignupFlow({
   const activeIndex = STEP_LABELS.findIndex((s) => s.id === step);
 
   return (
-    <div className="mx-auto max-w-2xl">
+    // Wider while the guide stands next to the plan card, like on /priser.
+    <div
+      className={`mx-auto ${showGuide && step === "plan" ? "max-w-4xl" : "max-w-2xl"}`}
+    >
       {step !== "bekraeft" && (
         <ol className="flex items-center justify-center gap-2 text-[13px]">
           {STEP_LABELS.map((s, i) => {
@@ -301,56 +313,61 @@ export function SignupFlow({
               </AudienceLink>
             </p>
 
-            <div className="mx-auto mt-4 max-w-sm rounded-sm border border-line bg-white px-8 pb-8">
-              <h2 className="mt-4 font-display text-[16px] font-normal text-navy border-b  border-line">
-                Opret medlemskab, register og dokumenter.
-              </h2>
+            {/* Stretched so the plan card and the guide are the same height. */}
+            <div className="mt-4 flex flex-col items-center gap-8 lg:flex-row lg:items-stretch lg:justify-center">
+              <div className="w-full max-w-sm rounded-sm border border-line bg-white px-8 pb-8">
+                <h2 className="mt-4 font-display text-[16px] font-normal text-navy border-b  border-line">
+                  Opret medlemskab, register og dokumenter.
+                </h2>
 
-              <p className="mt-3 font-display text-[24px] font-bold text-navy">
-                {plan.name}
-              </p>
-              <p className="mt-0.5 text-[14px] text-muted">{plan.tagline}</p>
+                <p className="mt-3 font-display text-[24px] font-bold text-navy">
+                  {plan.name}
+                </p>
+                <p className="mt-0.5 text-[14px] text-muted">{plan.tagline}</p>
 
-              <p className="mt-5 flex items-baseline gap-1.5">
-                <span className="text-[40px] leading-none font-bold text-navy">
-                  {price.monthlyPrice}
-                </span>
-                <span className="text-[15px] font-medium text-navy">
-                  kr./md.
-                </span>
-              </p>
-              <p className="mt-1.5 text-[13px] text-orange">
-                {studentPrice
-                  ? "Studiepris · ingen oprettelse"
-                  : `+ ${price.setupFee} kr. ved oprettelse (én gang)`}
-              </p>
-              <p className="mt-1 text-[12px] text-muted">
-                Alle priser {vatLabel(plan)}
-              </p>
+                <p className="mt-5 flex items-baseline gap-1.5">
+                  <span className="text-[40px] leading-none font-bold text-navy">
+                    {price.monthlyPrice}
+                  </span>
+                  <span className="text-[15px] font-medium text-navy">
+                    kr./md.
+                  </span>
+                </p>
+                <p className="mt-1.5 text-[13px] text-orange">
+                  {studentPrice
+                    ? "Studiepris · ingen oprettelse"
+                    : `+ ${price.setupFee} kr. ved oprettelse (én gang)`}
+                </p>
+                <p className="mt-1 text-[12px] text-muted">
+                  Alle priser {vatLabel(plan)}
+                </p>
 
-              <ul className="mt-6 space-y-2.5 border-t border-line pt-5">
-                {plan.features.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-start gap-2.5 text-[14px] text-body"
-                  >
-                    <Check
-                      className="mt-0.5 size-3.5 shrink-0 text-orange"
-                      strokeWidth={3}
-                    />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+                <ul className="mt-6 space-y-2.5 border-t border-line pt-5">
+                  {plan.features.map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-start gap-2.5 text-[14px] text-body"
+                    >
+                      <Check
+                        className="mt-0.5 size-3.5 shrink-0 text-orange"
+                        strokeWidth={3}
+                      />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
 
-              <button
-                type="button"
-                onClick={choosePlan}
-                className="mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-orange text-[16px] font-bold text-white transition-colors hover:bg-orange-dark"
-              >
-                Vælg {plan.name}
-                <ArrowRight className="size-4" strokeWidth={2.5} />
-              </button>
+                <button
+                  type="button"
+                  onClick={choosePlan}
+                  className="mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-orange text-[16px] font-bold text-white transition-colors hover:bg-orange-dark"
+                >
+                  Vælg {plan.name}
+                  <ArrowRight className="size-4" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {showGuide && <HowToShort audience={audience} />}
             </div>
           </>
         )}

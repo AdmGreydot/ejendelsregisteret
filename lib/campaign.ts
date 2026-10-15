@@ -10,8 +10,9 @@
  *
  *   1. Delete this file and supabase/functions/_shared/campaign.ts
  *   2. app/bliv-medlem/page.tsx — drop the line reading ?kampagne=
- *   3. SignupFlow.tsx — drop the `campaign` prop and the `price` variable,
- *      and put plan.monthlyPrice / plan.setupFee back
+ *   3. SignupFlow.tsx — drop the `campaign` prop, the `price` variable and
+ *      the `showGuide` block (HowToShort next to the plan card), and put
+ *      plan.monthlyPrice / plan.setupFee back
  *   4. create-checkout/index.ts — drop the block marked CAMPAIGN
  *   5. Delete the STRIPE_PRICE_STUDENT secret and archive the Stripe price
  *
