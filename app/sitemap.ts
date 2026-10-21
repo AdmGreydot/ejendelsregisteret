@@ -25,7 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/", 1),
     page("/priser", 0.9),
     page("/serienummer", 0.9),
-    page("/guide", 0.9),
     page("/inventarliste", 0.9),
     page("/se-hvordan", 0.8),
     page("/bliv-medlem", 0.8),

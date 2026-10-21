@@ -25,7 +25,7 @@ export function HowItWorks() {
             Sådan virker det
           </h2>
           <Link
-            href="/guide"
+            href="/se-hvordan"
             className="inline-flex items-center gap-1.5 text-[14px] font-medium text-orange transition-colors hover:text-orange-dark"
           >
             Læs den fulde guide

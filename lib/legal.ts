@@ -32,7 +32,6 @@ export const LEGAL_PAGES = [
 export const FOOTER_NAV = [
   { label: "Forside", href: "/" },
   { label: "Slå serienummer op", href: "/serienummer" },
-  { label: "Guide", href: "/guide" },
   { label: "Inventarliste", href: "/inventarliste" },
   { label: "Priser", href: "/priser" },
   { label: "Bliv medlem", href: "/bliv-medlem" },
