@@ -468,8 +468,8 @@ export async function bygEjendelsbevis(
   return pdf.save();
 }
 
-/** Samlet rapport over hele inventarlisten. */
-export async function bygInventarrapport(
+/** Samlet rapport over alle registrerede ejendele. */
+export async function bygEjendelsrapport(
   ejendele: BevisEjendel[],
   ejer: { navn: string | null; email: string },
   stemplet = new Date(),
@@ -481,13 +481,13 @@ export async function bygInventarrapport(
 
   const dato = stemplet.toLocaleDateString("da-DK", { dateStyle: "long" });
 
-  pdf.setTitle(`Inventarliste – ${ejer.navn ?? ejer.email}`);
+  pdf.setTitle(`Ejendelsoversigt – ${ejer.navn ?? ejer.email}`);
   pdf.setAuthor(COMPANY.service);
   pdf.setSubject("Samlet dokumentation for ejerskab");
 
   brevhoved(
     ark,
-    "Inventarliste",
+    "Ejendelsoversigt",
     `${ejendele.length} ${ejendele.length === 1 ? "registreret ejendel" : "registrerede ejendele"} · udskrevet ${dato}`,
   );
 

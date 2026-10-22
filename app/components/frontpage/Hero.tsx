@@ -11,17 +11,10 @@ const USPS = [
 
 export function Hero({ plan }: { plan: Plan }) {
   return (
-    <section className="photo-hero">
+    <section className="photo-hero min-h-[60vh] flex flex-col justify-center">
       <div className="mx-auto max-w-3xl px-6 py-8 text-center">
         <h1 className="m-0">
           <span className="block text-[clamp(39px,5vw,59px)] leading-none text-white">
-            Inventarlisten
-          </span>
-
-          <span className="block text-[24px] tracking-normal text-[#ef7628]">
-            en del af
-          </span>
-          <span className="block text-[46px] leading-none text-white">
             Ejendelsregisteret
           </span>
         </h1>
@@ -34,7 +27,7 @@ export function Hero({ plan }: { plan: Plan }) {
 
         <p className="mx-auto mt-6 max-w-xl text-[17px] leading-[1.6] text-white/85">
           Serienummer, kvittering og billeder samlet ét sted. Opret dig og dine
-          ting, og se din inventarliste på Min side.
+          ting, og se dine ejendele på Min side.
         </p>
 
         <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[14px] text-white/70">
@@ -62,13 +55,7 @@ export function Hero({ plan }: { plan: Plan }) {
           </Link>
         </div>
 
-        <p className="mt-5 text-[13px] text-white/55">
-          {plan.setupFee} kr. i oprettelse &middot; {plan.monthlyPrice} kr./md.
-          &middot; {plan.includedItems} ejendele inkluderet &middot; opsig når
-          som helst &middot; {vatLabel(plan)}
-        </p>
-
-        <p className="mt-8 border-t border-white/15 pt-5 text-[14px] text-white/60">
+        <p className="mt-8  pt-5 text-[14px] text-white/60">
           Har du fundet noget?{" "}
           <Link
             href="/serienummer"

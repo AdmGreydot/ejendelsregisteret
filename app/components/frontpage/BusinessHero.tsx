@@ -37,29 +37,14 @@ export function BusinessHero() {
         <div className="grid gap-8 lg:grid-cols-[auto_1fr] lg:gap-12">
           <div className="flex flex-col lg:items-start">
             <h1 className="m-0 w-fit">
-              <span className="block  text-[46px] leading-none text-white">
-                Inventarlisten
-              </span>
-              <em className="font-accent  text-[32px] text-orange">
-                en del af
-              </em>
-              <span className="block mt-5 text-[46px] leading-none text-white">
+              <span className="block text-[46px] leading-none text-white">
                 Ejendelsregisteret
               </span>
             </h1>
             <p className="mt-3 text-[13px] font-semibold uppercase tracking-[0.25em] text-orange">
               For håndværkere &amp; entreprenører
             </p>
-          </div>
-
-          <div className="lg:text-right">
-            <h2 className="font-display text-[46px] leading-[1.1] font-normal text-white">
-              Værktøj &amp; udstyr
-              <br />
-              <em className="font-accent text-orange">samlet ét sted</em>
-            </h2>
-
-            <div className="mt-9 flex flex-wrap gap-3 lg:justify-end">
+            <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/se-hvordan"
                 className="inline-flex h-11 items-center gap-2 rounded-sm bg-orange px-7 text-[16px] font-medium text-white transition-colors hover:bg-orange-dark"
@@ -74,6 +59,14 @@ export function BusinessHero() {
                 Se pris for erhverv
               </Link>
             </div>
+          </div>
+
+          <div className="lg:text-right">
+            <h2 className="font-display text-[46px] leading-[1.1] font-normal text-white">
+              Værktøj &amp; udstyr
+              <br />
+              <em className="font-accent text-orange">samlet ét sted</em>
+            </h2>
           </div>
         </div>
 

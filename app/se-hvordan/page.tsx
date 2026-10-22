@@ -58,8 +58,8 @@ export default function SeeHowPage() {
                 Se hvordan
               </p>
               <h1 className="mt-4 max-w-2xl font-display text-[36px] leading-[1.1] font-normal text-white sm:text-[50px]">
-                Tag billeder af det du vil oprette i din{" "}
-                <em className="font-accent text-orange">inventarliste</em>
+                Tag billeder af det du vil{" "}
+                <em className="font-accent text-orange">registrere</em>
               </h1>
               <p className="mt-5 max-w-xl text-[17px] leading-[1.7] text-white/75">
                 Tre ting, og ejendelen er klar til forsikringen, findbar hvis
@@ -110,7 +110,7 @@ export default function SeeHowPage() {
               <ExampleCard example={EXAMPLES.iphone} flip />
             </div>
 
-            <div className="my-10 flex items-start gap-4 rounded-sm border-l-2 border-orange bg-white px-6 py-5">
+            <div className="mt-10 flex items-start gap-4 rounded-sm border-l-2 border-orange bg-white px-6 py-5">
               <Repeat
                 className="mt-1 size-5 shrink-0 text-orange"
                 strokeWidth={2}
@@ -120,24 +120,8 @@ export default function SeeHowPage() {
                   Nummeret følger ejendelen hele “livet”.
                 </strong>{" "}
                 Ligesom stelnummeret på en bil kan det skifte ejer. Det gør man
-                på inventarlisten under ejerskifte.
+                på Min side under ejerskifte.
               </p>
-            </div>
-
-            <div className="max-w-2xl">
-              <h2 className="font-display text-[26px] leading-tight font-normal text-navy sm:text-[32px]">
-                Ting uden mærkat
-              </h2>
-              <p className="mt-3 text-[16px] leading-[1.75] text-body">
-                Keramik, kunst og møbler har sjældent et typeskilt. Fotografér
-                hele tingen, kendetegn som ridser, og bunden med stempel eller
-                signatur.
-              </p>
-            </div>
-
-            <div className="mt-8 space-y-6">
-              <ExampleCard example={EXAMPLES.floorVase} />
-              <ExampleCard example={EXAMPLES.ceramics} flip />
             </div>
           </div>
         </section>

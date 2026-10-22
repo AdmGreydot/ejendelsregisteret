@@ -205,7 +205,7 @@ export function noItemsYet(to: string, name: string | null) {
     preheader:
       "Dit medlemskab er aktivt, men der er ingen ejendele registreret endnu.",
     paragraphs: [
-      "Dit medlemskab er aktivt, men der ligger ingen ejendele i din inventarliste endnu. Det betyder ogs&aring; at der ikke er noget at dokumentere med, hvis uheldet sker.",
+      "Dit medlemskab er aktivt, men der er ingen ejendele registreret p&aring; din konto endnu. Det betyder ogs&aring; at der ikke er noget at dokumentere med, hvis uheldet sker.",
       "Start med &eacute;n ting. Tag telefonen, cyklen eller v&aelig;rkt&oslash;jet. Et billede af genstanden og et af m&aelig;rkaten med serienummeret er nok.",
     ],
     button: {

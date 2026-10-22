@@ -183,7 +183,7 @@ export default async function MyAccountPage({
         <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
           <div>
             <h1 className="font-display text-[26px] font-normal text-navy sm:text-[32px]">
-              Inventarlisten
+              Mine ejendele
             </h1>
           </div>
         </div>

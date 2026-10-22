@@ -59,10 +59,9 @@ export async function Navbar() {
           </div>
 
           <div className="ml-auto flex items-center gap-5">
-            {/* Søgefeltet og login-knapperne fylder for meget på en telefon
-                og flytter i stedet ind i skuffen. */}
+            {/* Login-knapperne fylder for meget på en telefon og flytter i
+                stedet ind i skuffen. */}
             <div className="hidden items-center gap-5 md:flex">
-              <NavSearch />
               <AuthMenu initialSignedIn={signedIn} />
             </div>
             <MobileMenu signedIn={signedIn} />
@@ -72,8 +71,13 @@ export async function Navbar() {
 
       {/* Sektionsbjælke */}
       <div className="hidden bg-orange/40 text-white md:block">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto flex max-w-6xl items-center gap-6 px-6">
           <SectionNav />
+          {/* Søgefeltet står altid åbent, højrestillet under login-knapperne.
+              På telefon ligger det i skuffen. */}
+          <div className="ml-auto w-64">
+            <NavSearch alwaysOpen />
+          </div>
         </div>
       </div>
     </header>

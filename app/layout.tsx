@@ -16,10 +16,9 @@ const abhaya = Abhaya_Libre({
   subsets: ["latin"],
 });
 
-// Both names, because people still search for "Inventarlisten".
-const TITLE = "Ejendelsregisteret – tidligere Inventarlisten";
+const TITLE = "Ejendelsregisteret – dokumentation for dine ejendele";
 const DESCRIPTION =
-  "Inventarlisten er nu Ejendelsregisteret. Registrér serienummer, kvittering og billeder på dine ejendele, så har du dokumentationen klar den dag du får brug for den.";
+  "Registrér serienummer, kvittering og billeder på dine ejendele, så har du dokumentationen klar den dag du får brug for den.";
 
 export const metadata: Metadata = {
   /**
