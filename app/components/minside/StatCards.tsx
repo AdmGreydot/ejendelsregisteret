@@ -19,7 +19,9 @@ export function StatCards({
       label: "Abonnement",
       value: monthlyPrice
         ? `${planName} · ${monthlyPrice.toLocaleString("da-DK")} kr/md.`
-        : "Ingen",
+        : monthlyPrice === 0
+          ? planName
+          : "Ingen",
     },
     { label: "Næste betaling", value: nextPayment ?? "Ingen" },
     { label: "Oprettet", value: createdAt ?? "Ukendt" },

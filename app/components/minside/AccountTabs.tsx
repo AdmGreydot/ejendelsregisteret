@@ -16,6 +16,7 @@ export function AccountTabs({
   includedItems,
   extraItemPrice,
   canAddItems,
+  free,
   initialTab = "ejendele",
   profile,
   plan,
@@ -26,6 +27,8 @@ export function AccountTabs({
   includedItems: number;
   extraItemPrice: number;
   canAddItems: boolean;
+  /** No membership: the free item is the limit, and nothing can be bought on top. */
+  free: boolean;
   /** Hvilken fane der er åben ved første render. Sættes fra ?tab= i URL'en,
    *  så man kan linke direkte til profilen udefra. */
   initialTab?: Tab;
@@ -85,6 +88,7 @@ export function AccountTabs({
                 includedItems={includedItems}
                 extraItemPrice={extraItemPrice}
                 canAddItems={canAddItems}
+                free={free}
                 showTrigger
               />
             </div>
@@ -97,6 +101,7 @@ export function AccountTabs({
                 includedItems={includedItems}
                 extraItemPrice={extraItemPrice}
                 canAddItems={canAddItems}
+                free={free}
               />
             </div>
           </div>

@@ -5,6 +5,8 @@ import {
   accountCreated,
   checkoutAbandoned,
   firstItem,
+  freeItemUsed,
+  freeNoItemsYet,
   itemLimitReached,
   noItemsYet,
 } from "../_shared/mails.ts";
@@ -49,6 +51,7 @@ const ONCE_ONLY = new Set([
   "graense_naaet",
   "ingen_ejendel_endnu",
   "betaling_ikke_fuldfoert",
+  "gratis_ingen_ejendel",
 ]);
 
 /** Service role-klienten fra ctx — omgår RLS. */
@@ -119,7 +122,13 @@ async function dispatch(
     case "foerste_ejendel":
       // Navnet på ejendelen står ikke i triggerens payload — den sender kun
       // user_id, så payloaden ikke skal ændres hver gang items får en kolonne.
-      await firstItem(recipient.email, await latestItemName(admin, userId));
+      // Without a membership it was the free item, and "register more"
+      // would point at something the database refuses.
+      if (await isActiveMember(admin, userId)) {
+        await firstItem(recipient.email, await latestItemName(admin, userId));
+      } else {
+        await freeItemUsed(recipient.email, await latestItemName(admin, userId));
+      }
       return true;
 
     case "graense_naaet":
@@ -139,6 +148,10 @@ async function dispatch(
     // bliver til spam anden gang den lander.
     case "betaling_ikke_fuldfoert":
       await checkoutAbandoned(recipient.email, recipient.name);
+      return true;
+
+    case "gratis_ingen_ejendel":
+      await freeNoItemsYet(recipient.email, recipient.name);
       return true;
 
     default:
@@ -222,6 +235,17 @@ async function extraItemPrice(admin: Admin, userId: string): Promise<number> {
   return profile?.account_type === "business"
     ? EXTRA_ITEM_PRICE_FALLBACK.business
     : EXTRA_ITEM_PRICE_FALLBACK.private;
+}
+
+/** Same test as has_active_subscription() in the database. */
+async function isActiveMember(admin: Admin, userId: string): Promise<boolean> {
+  const { data } = await admin
+    .from("subscriptions")
+    .select("status")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  return data?.status === "active";
 }
 
 /** Er mailtypen allerede sendt til brugeren? */

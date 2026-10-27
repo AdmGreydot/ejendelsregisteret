@@ -60,6 +60,29 @@ const PRICING: Record<PlanId, Pricing> = {
   },
 };
 
+/**
+ * Items an account may register without a membership. The free bike offer:
+ * sign up for free and register your bike, pay for anything beyond that.
+ *
+ * MUST match can_create_item() in supabase/migrations — the database is
+ * what actually stops item number two; this only decides what is shown.
+ */
+export const FREE_ITEMS = 1;
+
+/**
+ * Did the user sign up through the free offer? Then upgrading has no setup
+ * fee, only the monthly price.
+ *
+ * The flag is `signup: "gratis"` in user metadata, set by SignupFlow.
+ * create-checkout reads the same flag and is what actually leaves the fee
+ * out; this only decides what is shown.
+ */
+export const FREE_SIGNUP = "gratis";
+
+export const isFreeSignup = (metadata: unknown) =>
+  (metadata as { signup?: unknown } | null | undefined)?.signup ===
+  FREE_SIGNUP;
+
 const privat = PRICING.privat;
 const erhverv = PRICING.erhverv;
 

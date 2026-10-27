@@ -217,6 +217,14 @@ export async function sendEmail(
     return { ok: false, error: "RESEND_API_KEY mangler" };
   }
 
+  // EMAIL_REDIRECT_TO sends every mail to one address instead of the real
+  // recipient, for testing. The original recipient goes in the subject.
+  const redirect = Deno.env.get("EMAIL_REDIRECT_TO");
+  const to = redirect || options.to;
+  const subject = redirect
+    ? `[til ${options.to}] ${options.subject}`
+    : options.subject;
+
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -226,8 +234,8 @@ export async function sendEmail(
       },
       body: JSON.stringify({
         from: FROM,
-        to: [options.to],
-        subject: options.subject,
+        to: [to],
+        subject,
         ...(options.replyTo ? { reply_to: [options.replyTo] } : {}),
         ...(options.unsubscribe
           ? {

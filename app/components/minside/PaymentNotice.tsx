@@ -4,7 +4,7 @@ import { CreditCard, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 
 import { invokeFunction } from "@/lib/functions";
-import type { PlanId } from "@/lib/plans";
+import { PLANS, type PlanId } from "@/lib/plans";
 
 import type { SubscriptionStatus } from "@/lib/subscription";
 
@@ -33,7 +33,7 @@ const MESSAGES: Record<
 > = {
   pending_activation: {
     title: "Betalingen blev ikke gennemført",
-    body: "Din konto er oprettet, men medlemskabet er ikke aktivt endnu. Du kan ikke oprette ejendele, før betalingen er gået igennem.",
+    body: "Din konto er oprettet, men medlemskabet er ikke aktivt endnu. Din gratis ejendel er brugt, så du kan ikke oprette flere, før betalingen er gået igennem.",
     cta: "Gennemfør betaling",
   },
   past_due: {
@@ -53,19 +53,23 @@ const MESSAGES: Record<
     body: "Du har stadig adgang til dine registrerede ejendele, men du kan ikke oprette nye.",
     cta: "Tegn medlemskab igen",
   },
+  // Only shown once the free item is used — see min-side/page.tsx.
   none: {
-    title: "Du har ikke et aktivt medlemskab",
-    body: "Opret et medlemskab for at kunne registrere dine ejendele.",
-    cta: "Vælg medlemskab",
+    title: "Din gratis ejendel er brugt",
+    body: "Med en gratis konto kan du registrere én ejendel. Tegn et medlemskab for at registrere resten af dine ting. Den du allerede har registreret, følger med.",
+    cta: "Tegn medlemskab",
   },
 };
 
 export function PaymentNotice({
   status,
   planId,
+  waiveSetupFee = false,
 }: {
   status: SubscriptionStatus;
   planId: PlanId;
+  /** Signed up free: upgrading has no setup fee. See create-checkout. */
+  waiveSetupFee?: boolean;
 }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,6 +145,14 @@ export function PaymentNotice({
           <p className="mt-1.5 text-[14.5px] leading-relaxed text-body">
             {message.body}
           </p>
+          {/* The price, so the upgrade is not a surprise in Stripe. Only for
+              free accounts — the other notices are about a membership the
+              customer already knows the price of. */}
+          {waiveSetupFee && !opdaterKort && (
+            <p className="mt-2 text-[14.5px] font-semibold text-navy">
+              {PLANS[planId].monthlyPrice} kr./md. · intet oprettelsesgebyr
+            </p>
+          )}
 
           {!opdaterKort && (
             <AcceptTerms

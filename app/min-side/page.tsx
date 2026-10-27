@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { PLANS } from "@/lib/plans";
+import { FREE_ITEMS, PLANS, isFreeSignup } from "@/lib/plans";
 import { Navbar } from "../components/Navbar";
 import { ItemWizard } from "../components/minside/ItemWizard";
 import { AccountTabs } from "../components/minside/AccountTabs";
@@ -44,6 +44,8 @@ export default async function MyAccountPage({
   // Sat af Stripes success_url. Findes kun i den ene viderestilling efter
   // en gennemført betaling, så guiden vises én gang og ikke ved hvert besøg.
   const justPaid = params.checkout === "ok";
+  // Set by the free signup, which skips Stripe and so never gets ?checkout=ok.
+  const justSignedUpFree = params.velkommen === "gratis";
   const initialTab = params.tab === "profil" ? "profil" : "ejendele";
 
   const supabase = await createClient();
@@ -155,17 +157,19 @@ export default async function MyAccountPage({
    * prisændringen), og dem må siden ikke vise som om de var kundens aftale.
    */
   const fraStripe = Boolean(subscription?.stripe_subscription_id);
+  // Never been through a payment: a free account. Shows the free item
+  // instead of the plan's numbers, which would be an offer, not their deal.
+  const free = !fraStripe;
   // Abonnementets eget tal er kun sandt når webhooken har sat det ud fra
-  // kundens Stripe-pris, dvs. når medlemskabet er aktivt. Før betaling står
-  // databasens standardværdi i rækken, og den passer ikke til nogen plan —
-  // så vises planens tal i stedet.
-  const includedItems =
-    fraStripe && subscription?.included_items != null
-      ? subscription.included_items
-      : plan.includedItems;
+  // kundens Stripe-pris. Før betaling står databasens standardværdi i
+  // rækken, og den passer ikke til nogen plan — så vises den gratis ejendel.
+  const includedItems = free
+    ? FREE_ITEMS
+    : (subscription?.included_items ?? plan.includedItems);
 
-  const monthlyPrice =
-    fraStripe && subscription?.monthly_price != null
+  const monthlyPrice = free
+    ? 0
+    : subscription?.monthly_price != null
       ? Number(subscription.monthly_price)
       : plan.monthlyPrice;
 
@@ -175,6 +179,9 @@ export default async function MyAccountPage({
     ? dkDate(subscription?.current_period_end ?? null)
     : null;
   const hasSubscription = status === "active";
+  // Same rule as can_create_item() in the database, which is what actually
+  // enforces it. Without a membership, the free item is all there is.
+  const canAddItems = hasSubscription || items.length < FREE_ITEMS;
 
   return (
     <>
@@ -190,27 +197,33 @@ export default async function MyAccountPage({
       </header>
       <main className="flex-1 bg-mist">
         <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
-          {justPaid && items.length === 0 && (
+          {(justPaid || justSignedUpFree) && items.length === 0 && (
             <ItemWizard
               userId={userId}
               categories={categories ?? []}
               itemCount={items.length}
               includedItems={includedItems}
               extraItemPrice={plan.extraItemPrice}
+              free={free}
               autoOpen
               showIntro
             />
           )}
 
-          <PaymentNotice
-            status={status}
-            planId={isBusiness ? "erhverv" : "privat"}
-          />
+          {/* A free account that has not used its free item yet has nothing
+              to be warned about — the upgrade only matters from item two. */}
+          {!(free && canAddItems) && (
+            <PaymentNotice
+              status={status}
+              planId={isBusiness ? "erhverv" : "privat"}
+              waiveSetupFee={isFreeSignup(data.claims.user_metadata)}
+            />
+          )}
 
           <StatCards
             itemCount={items.length}
             includedItems={includedItems}
-            planName={planName}
+            planName={free ? "Gratis" : planName}
             monthlyPrice={monthlyPrice}
             nextPayment={nextPayment}
             createdAt={dkMonth(profile?.created_at ?? null)}
@@ -222,7 +235,8 @@ export default async function MyAccountPage({
             categories={categories ?? []}
             includedItems={includedItems}
             extraItemPrice={plan.extraItemPrice}
-            canAddItems={hasSubscription}
+            canAddItems={canAddItems}
+            free={free}
             initialTab={initialTab}
             profile={
               <ProfileForm
@@ -234,7 +248,7 @@ export default async function MyAccountPage({
             }
             plan={
               <PlanPanel
-                planName={planName}
+                planName={free ? "Gratis" : planName}
                 includedItems={includedItems}
                 monthlyPrice={monthlyPrice}
                 nextPayment={nextPayment}

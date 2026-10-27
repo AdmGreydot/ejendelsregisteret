@@ -26,6 +26,7 @@ export function AddItemDialog({
   includedItems,
   extraItemPrice,
   canAddItems,
+  free = false,
 }: {
   userId: string;
   categories: Category[];
@@ -35,6 +36,8 @@ export function AddItemDialog({
   /** Falsk når medlemskabet ikke er aktivt. Databasen spærrer også, men
    *  en deaktiveret knap forklarer hvorfor frem for at fejle ved gem. */
   canAddItems: boolean;
+  /** Free account — see AccountTabs. */
+  free?: boolean;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   /**
@@ -175,6 +178,7 @@ export function AddItemDialog({
         includedItems={includedItems}
         extraItemPrice={extraItemPrice}
         canAddItems={canAddItems}
+        free={free}
         onOpen={open}
       />
 

@@ -19,7 +19,7 @@ export const COMPANY = {
 } as const;
 
 /** Datoen der står øverst på alle tre juridiske sider. */
-export const LEGAL_UPDATED = "1. september 2026";
+export const LEGAL_UPDATED = "27. oktober 2026";
 
 export const LEGAL_PAGES = [
   { label: "Privatlivspolitik", href: "/privatlivspolitik" },

@@ -81,7 +81,8 @@ export function PlanPanel({
               {planName}
             </p>
             <p className="mt-0.5 text-[14px] text-muted">
-              {includedItems} ejendele inkluderet
+              {includedItems} {includedItems === 1 ? "ejendel" : "ejendele"}{" "}
+              inkluderet
             </p>
           </div>
           <p className="shrink-0 text-[26px] font-bold text-navy">

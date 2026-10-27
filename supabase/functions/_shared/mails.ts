@@ -153,11 +153,16 @@ export function accountCreated(to: string, name: string | null) {
     subject: "Din konto er oprettet",
     heading: `${greeting}.`,
     preheader: "Din konto hos Ejendelsregisteret er oprettet.",
+    // Every account gets one free item (can_create_item() in the
+    // migrations), so this mail starts there rather than at the payment.
     paragraphs: [
-      "Din konto er oprettet. Sidste skridt er at aktivere dit medlemskab. Derefter kan du begynde at registrere dine ejendele.",
-      "Med et medlemskab samler du serienummer, kvittering og billeder ét sted, s&aring; du har dokumentationen klar den dag noget bliver v&aelig;k, stj&aring;let eller br&aelig;ndt.",
+      "Din konto er oprettet, og du kan registrere din f&oslash;rste ejendel gratis. Start med din cykel: tag et billede af den og af stelnummeret, s&aring; er den dokumenteret.",
+      "Vil du registrere flere ting, kr&aelig;ver det et medlemskab. S&aring; samler du serienummer, kvittering og billeder for det hele &eacute;t sted, og har dokumentationen klar den dag noget bliver v&aelig;k, stj&aring;let eller br&aelig;ndt.",
     ],
-    button: { label: "Aktivér dit medlemskab", url: `${siteUrl()}/priser` },
+    button: {
+      label: "Registrér din første ejendel",
+      url: `${siteUrl()}/min-side`,
+    },
   });
 }
 
@@ -175,6 +180,48 @@ export function firstItem(to: string, itemName: string) {
     button: { label: "Registrér flere", url: `${siteUrl()}/min-side` },
     footnote:
       "Mangler du serienummeret? Det står som regel på en mærkat i bunden, bag batteriet eller på rammen.",
+  });
+}
+
+/**
+ * Gratis ejendel brugt. The free variant of firstItem.
+ *
+ * firstItem says "register more", which a free account cannot do — the
+ * database refuses item two. So this one says what it takes instead.
+ */
+export function freeItemUsed(to: string, itemName: string) {
+  return sendEmail({
+    to,
+    subject: `${itemName} er registreret`,
+    heading: "Den er dokumenteret.",
+    preheader: `${itemName} er registreret gratis i Ejendelsregisteret.`,
+    paragraphs: [
+      `<strong style="color:#1c2d4f;">${itemName}</strong> er registreret, og det koster dig ingenting. Bliver den v&aelig;k, har du serienummer og billeder klar til politiet og forsikringen, og en finder kan sl&aring; den op.`,
+      "Din gratis konto d&aelig;kker &eacute;n ejendel. Vil du ogs&aring; have styr p&aring; telefon, computer, v&aelig;rkt&oslash;j og resten, kr&aelig;ver det et medlemskab. Du slipper for oprettelsesgebyret og betaler kun den m&aring;nedlige pris, og det du allerede har registreret, f&oslash;lger med.",
+    ],
+    button: { label: "Se medlemskab", url: `${siteUrl()}/min-side` },
+  });
+}
+
+/**
+ * Gratis, ingen ejendel endnu. A free account that has not registered its
+ * one item a day after confirming. See nudge_free_users_without_items().
+ */
+export function freeNoItemsYet(to: string, name: string | null) {
+  return sendEmail({
+    to,
+    subject: "Du mangler at registrere din cykel",
+    heading: name
+      ? `${name.split(" ")[0]}, din cykel mangler.`
+      : "Din cykel mangler.",
+    preheader: "Din gratis konto er klar. Det tager to minutter.",
+    paragraphs: [
+      "Din konto er oprettet, men der er ikke registreret noget endnu. Det er gratis, og det tager to minutter.",
+      "Vend cyklen om og find stelnummeret. Det st&aring;r typisk under krankboksen mellem pedalerne. Tag et billede af det og et af hele cyklen, s&aring; er den dokumenteret.",
+    ],
+    button: { label: "Registrér din cykel", url: `${siteUrl()}/min-side` },
+    footnote: "Har du ikke en cykel? Du kan registrere hvad som helst andet med et serienummer.",
+    unsubscribe: true,
   });
 }
 

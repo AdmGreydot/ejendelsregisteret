@@ -54,7 +54,9 @@ export function PlanCard({
         </span>
       </p>
       <p className="mt-2 text-[13px] text-orange">
-        + {plan.setupFee} kr. ved oprettelse (én gang)
+        {plan.setupFee === 0
+          ? "Intet oprettelsesgebyr"
+          : `+ ${plan.setupFee} kr. ved oprettelse (én gang)`}
       </p>
       <p
         className={`mt-1 text-[12px] ${dark ? "text-white/50" : "text-muted"}`}

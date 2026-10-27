@@ -16,16 +16,21 @@ import { PlanCard } from "./PlanCard";
 export function PricingHero({
   signedIn,
   status,
+  waiveSetupFee = false,
 }: {
   signedIn: boolean;
   status: SubscriptionStatus;
+  /** Free account upgrading: monthly price only. See create-checkout. */
+  waiveSetupFee?: boolean;
 }) {
   const router = useRouter();
   const { audience } = useAudience();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const plan = PLANS[audience];
+  const plan = waiveSetupFee
+    ? { ...PLANS[audience], setupFee: 0 }
+    : PLANS[audience];
 
   /**
    * Fluebenet vises kun når knappen faktisk fører til en betaling.

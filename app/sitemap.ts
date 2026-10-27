@@ -13,7 +13,7 @@ import { SITE_URL } from "@/lib/site";
  * et signal der altid siger "i dag" holder op med at betyde noget.
  */
 /** Skal følge LEGAL_UPDATED i lib/legal.ts. */
-const LEGAL_DATE = new Date("2026-09-01");
+const LEGAL_DATE = new Date("2026-10-27");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const page = (path: string, priority: number) => ({

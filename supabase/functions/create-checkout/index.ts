@@ -146,6 +146,13 @@ export default {
       // TEMPORARY: see the CAMPAIGN block at line_items below.
       const student = campaignApplies(campaign, planId);
 
+      // Signed up through the free bike offer: upgrading costs the monthly
+      // price only, no setup fee. The flag is set by SignupFlow and lives in
+      // user metadata, which the user can edit — that is accepted. The free
+      // signup is open to anyone, so anyone can get the waiver that way
+      // anyway; trusting the flag gives away nothing new.
+      const waiveSetupFee = ctx.userClaims?.userMetadata?.signup === "gratis";
+
       // Genbrug Stripe-kunden, så en afbrudt checkout ikke skaber dubletter.
       let customerId = existing?.stripe_customer_id ?? null;
       if (!customerId) {
@@ -173,7 +180,10 @@ export default {
           : [
               // report-usage hæver den til kundens faktiske antal ejendele.
               { price: subscriptionPriceId(planId), quantity: 1 },
-              { price: setupPriceId(planId), quantity: 1 },
+              // Left out rather than discounted, like the student price.
+              ...(waiveSetupFee
+                ? []
+                : [{ price: setupPriceId(planId), quantity: 1 }]),
             ],
         // Viser feltet "Tilføj kampagnekode" i Checkout. Hører til på selve
         // sessionen — subscription_data kender ikke parameteren og afviser den.
@@ -192,6 +202,7 @@ export default {
             user_id: userId,
             plan_id: planId,
             ...(student ? { campaign: "student" } : {}),
+            ...(waiveSetupFee ? { signup: "gratis" } : {}),
           },
         },
         // ?checkout=ok udløser onboarding-guiden på Min side. Markøren

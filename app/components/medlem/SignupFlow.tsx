@@ -1,11 +1,12 @@
 "use client";
 
 import { ArrowRight, Check, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { invokeFunction } from "@/lib/functions";
 import { createClient } from "@/lib/supabase/client";
-import { PLANS, vatLabel, type PlanId } from "@/lib/plans";
+import { FREE_SIGNUP, PLANS, vatLabel, type PlanId } from "@/lib/plans";
 import { userMessage } from "@/lib/errors";
 import { CAMPAIGN_PRICE, type Campaign } from "@/lib/campaign";
 import {
@@ -72,18 +73,30 @@ export function SignupFlow({
   signedIn,
   skipPlanStep = false,
   campaign = null,
+  free = false,
+  waiveSetupFee = false,
 }: {
   signedIn: boolean;
   /** Sat når brugeren kommer fra prissiden, hvor planen allerede er valgt. */
   skipPlanStep?: boolean;
   /** TEMPORARY: the student campaign. See lib/campaign.ts. */
   campaign?: Campaign | null;
+  /**
+   * The free bike offer: create the account and go straight to Min side
+   * to register one item. No plan, no payment. See FREE_ITEMS in lib/plans.ts.
+   */
+  free?: boolean;
+  /** Signed in with a free account: upgrading costs the monthly price only. */
+  waiveSetupFee?: boolean;
 }) {
   // Medlemskabet ER audience-valget. Havde flowet sin egen planId-tilstand,
   // kunne de to nå at pege forskellige steder hen — fx hvis man skiftede i
   // navbaren midt i forløbet.
   const { audience, setAudience } = useAudience();
-  const planId: PlanId = audience;
+  const router = useRouter();
+  // A free account is always private. Company and CVR belong to the paid
+  // business plan, which sets the account type itself at checkout.
+  const planId: PlanId = free ? "privat" : audience;
   const plan = PLANS[planId];
 
   /**
@@ -94,7 +107,11 @@ export function SignupFlow({
    * student price on screen and be charged something else by Stripe.
    */
   const studentPrice = campaign !== null && planId === "privat";
-  const price = studentPrice ? CAMPAIGN_PRICE : plan;
+  const price = studentPrice
+    ? CAMPAIGN_PRICE
+    : waiveSetupFee
+      ? { ...plan, setupFee: 0 }
+      : plan;
 
   /**
    * TEMPORARY: the campaign link lands here instead of on /priser, so the
@@ -105,7 +122,7 @@ export function SignupFlow({
   const showGuide = campaign !== null;
 
   const [step, setStep] = useState<Step>(
-    skipPlanStep ? (signedIn ? "betaling" : "konto") : "plan",
+    free || skipPlanStep ? (signedIn ? "betaling" : "konto") : "plan",
   );
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -173,6 +190,8 @@ export function SignupFlow({
         data: {
           full_name: String(form.get("navn")),
           account_type: planId === "erhverv" ? "business" : "private",
+          // Waives the setup fee when they upgrade. See create-checkout.
+          ...(free ? { signup: FREE_SIGNUP } : {}),
           ...(planId === "erhverv"
             ? {
                 company_name: String(form.get("virksomhed") ?? ""),
@@ -210,6 +229,14 @@ export function SignupFlow({
     if (!session) {
       setPending(false);
       setStep("bekraeft");
+      return;
+    }
+
+    // A free account is done here. ?velkommen=gratis opens the item guide.
+    // refresh() so Min side renders with the new session, as in AuthDialog.
+    if (free) {
+      router.push("/min-side?velkommen=gratis");
+      router.refresh();
       return;
     }
 
@@ -252,7 +279,8 @@ export function SignupFlow({
     <div
       className={`mx-auto ${showGuide && step === "plan" ? "max-w-4xl" : "max-w-2xl"}`}
     >
-      {step !== "bekraeft" && (
+      {/* One step is not a sequence — the free signup has no stepper. */}
+      {step !== "bekraeft" && !free && (
         <ol className="flex items-center justify-center gap-2 text-[13px]">
           {STEP_LABELS.map((s, i) => {
             const done = i < activeIndex;
@@ -336,7 +364,9 @@ export function SignupFlow({
                 <p className="mt-1.5 text-[13px] text-orange">
                   {studentPrice
                     ? "Studiepris · ingen oprettelse"
-                    : `+ ${price.setupFee} kr. ved oprettelse (én gang)`}
+                    : price.setupFee === 0
+                      ? "Intet oprettelsesgebyr"
+                      : `+ ${price.setupFee} kr. ved oprettelse (én gang)`}
                 </p>
                 <p className="mt-1 text-[12px] text-muted">
                   Alle priser {vatLabel(plan)}
@@ -378,13 +408,16 @@ export function SignupFlow({
             className="rounded-sm border border-line bg-white p-8"
           >
             <h1 className="font-display text-[26px] font-normal text-navy">
-              Opret din konto
+              {free ? "Opret din gratis konto" : "Opret din konto"}
             </h1>
             <p className="mt-1 text-[14px] text-muted">
-              {plan.name} &middot; {price.monthlyPrice} kr./md.{" "}
-              {studentPrice
-                ? "· studiepris, ingen oprettelse"
-                : `+ ${price.setupFee} kr. ved oprettelse`}
+              {free
+                ? "Registrér din cykel gratis. Ingen betaling, intet kort."
+                : `${plan.name} · ${price.monthlyPrice} kr./md. ${
+                    studentPrice
+                      ? "· studiepris, ingen oprettelse"
+                      : `+ ${price.setupFee} kr. ved oprettelse`
+                  }`}
             </p>
 
             <div className="mt-6 space-y-4">
@@ -532,16 +565,22 @@ export function SignupFlow({
               disabled={pending}
               className="mt-6 h-11 w-full rounded-sm bg-orange text-[16px] font-bold text-white transition-colors hover:bg-orange-dark disabled:opacity-70"
             >
-              {pending ? "Opretter konto…" : "Fortsæt til betaling"}
+              {pending
+                ? "Opretter konto…"
+                : free
+                  ? "Opret gratis konto"
+                  : "Fortsæt til betaling"}
             </button>
 
-            <button
-              type="button"
-              onClick={() => setStep("plan")}
-              className="mt-3 w-full text-[14px] text-muted hover:text-navy"
-            >
-              Tilbage til valg af medlemskab
-            </button>
+            {!free && (
+              <button
+                type="button"
+                onClick={() => setStep("plan")}
+                className="mt-3 w-full text-[14px] text-muted hover:text-navy"
+              >
+                Tilbage til valg af medlemskab
+              </button>
+            )}
           </form>
         )}
 
@@ -565,7 +604,7 @@ export function SignupFlow({
               <div className="flex justify-between">
                 <dt className="text-muted">Oprettelse (én gang)</dt>
                 <dd className="font-semibold text-navy">
-                  {studentPrice ? "Gratis" : `${price.setupFee} kr.`}
+                  {price.setupFee === 0 ? "Gratis" : `${price.setupFee} kr.`}
                 </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-2">
@@ -622,8 +661,9 @@ export function SignupFlow({
               det for at aktivere kontoen.
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[14px] text-muted">
-              Når du er bekræftet, logger du ind og gennemfører betalingen. Der
-              er ikke trukket penge endnu.
+              {free
+                ? "Når du er bekræftet, logger du ind og registrerer din cykel."
+                : "Når du er bekræftet, logger du ind og gennemfører betalingen. Der er ikke trukket penge endnu."}
             </p>
           </div>
         )}

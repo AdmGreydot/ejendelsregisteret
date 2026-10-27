@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { PLANS } from "@/lib/plans";
+import { PLANS, isFreeSignup } from "@/lib/plans";
 import type { SubscriptionStatus } from "@/lib/subscription";
 import { createClient } from "@/lib/supabase/server";
 
@@ -42,7 +42,11 @@ export default async function PricingPage() {
     <>
       <Navbar />
       <main className="flex-1">
-        <PricingHero signedIn={signedIn} status={status} />
+        <PricingHero
+          signedIn={signedIn}
+          status={status}
+          waiveSetupFee={isFreeSignup(data?.claims?.user_metadata)}
+        />
         <Faq />
       </main>
     </>

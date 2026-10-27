@@ -43,6 +43,7 @@ export function ItemWizard({
   trigger,
   showTrigger = false,
   canAddItems = true,
+  free = false,
   onCreated,
 }: {
   userId: string;
@@ -65,6 +66,9 @@ export function ItemWizard({
   /** Kun relevant sammen med showTrigger: gråner knappen uden aktivt
    *  medlemskab, ligesom i dialogen. */
   canAddItems?: boolean;
+  /** Free account — see AccountTabs. At the limit it offers a membership
+   *  instead of buying an extra item. */
+  free?: boolean;
   onCreated?: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -137,6 +141,9 @@ export function ItemWizard({
   // denne omgang, som siden bagved endnu ikke har talt med.
   const totalItems = itemCount + createdCount;
   const atLimit = totalItems >= includedItems;
+  // The free item is used. There is nothing to buy on top of a free account
+  // — the database would refuse it — so the next step is a membership.
+  const freeUsed = free && atLimit;
 
   const isLast = step === STEPS.length - 1;
   const canContinue = step > 0 || name.trim().length > 0;
@@ -182,6 +189,7 @@ export function ItemWizard({
           includedItems={includedItems}
           extraItemPrice={extraItemPrice}
           canAddItems={canAddItems}
+          free={free}
           onOpen={() => dialogRef.current?.showModal()}
         />
       )}
@@ -207,7 +215,13 @@ export function ItemWizard({
                   ? "Du har registreret din første ejendel"
                   : "Ejendelen er registreret"}
               </h2>
-              {atLimit ? (
+              {freeUsed ? (
+                <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-body">
+                  Den er gratis og ligger klar, den dag du får brug for den. Vil
+                  du registrere flere ting, kræver det et medlemskab. Det kan du
+                  tegne på din side.
+                </p>
+              ) : atLimit ? (
                 <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-body">
                   Du har nu registreret{" "}
                   <strong className="font-semibold text-navy">
@@ -229,26 +243,39 @@ export function ItemWizard({
                 </p>
               )}
 
-              <button
-                type="button"
-                onClick={again}
-                className={`mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm text-[16px] font-bold transition-colors ${
-                  atLimit
-                    ? "border border-orange text-orange hover:bg-orange hover:text-white"
-                    : "bg-orange text-white hover:bg-orange-dark"
-                }`}
-              >
-                <Plus className="size-4" strokeWidth={2.5} />
-                {atLimit ? "Tilkøb ejendel" : "Ja, registrer flere"}
-              </button>
+              {!freeUsed && (
+                <button
+                  type="button"
+                  onClick={again}
+                  className={`mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm text-[16px] font-bold transition-colors ${
+                    atLimit
+                      ? "border border-orange text-orange hover:bg-orange hover:text-white"
+                      : "bg-orange text-white hover:bg-orange-dark"
+                  }`}
+                >
+                  <Plus className="size-4" strokeWidth={2.5} />
+                  {atLimit ? "Tilkøb ejendel" : "Ja, registrer flere"}
+                </button>
+              )}
 
-              <button
-                type="button"
-                onClick={finish}
-                className="mt-4 text-[14px] text-muted underline underline-offset-4 transition-colors hover:text-navy"
-              >
-                Nej tak, gå til min side
-              </button>
+              {freeUsed ? (
+                <button
+                  type="button"
+                  onClick={finish}
+                  className="mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-orange text-[16px] font-bold text-white transition-colors hover:bg-orange-dark"
+                >
+                  Gå til min side
+                  <ArrowRight className="size-4" strokeWidth={2.5} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={finish}
+                  className="mt-4 text-[14px] text-muted underline underline-offset-4 transition-colors hover:text-navy"
+                >
+                  Nej tak, gå til min side
+                </button>
+              )}
             </div>
           ) : phase === "intro" ? (
             <div className="p-5 text-center sm:p-8">

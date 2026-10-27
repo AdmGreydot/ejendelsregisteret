@@ -13,18 +13,28 @@ export function AddItemTrigger({
   includedItems,
   extraItemPrice,
   canAddItems,
+  free = false,
   onOpen,
 }: {
   itemCount: number;
   includedItems: number;
   extraItemPrice: number;
   canAddItems: boolean;
+  /** Free account: at the limit the way on is a membership, not an extra item. */
+  free?: boolean;
   onOpen: () => void;
 }) {
   const atLimit = itemCount >= includedItems;
 
   return (
     <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+      {atLimit && free && (
+        <span className="w-full text-[13px] text-muted sm:w-auto">
+          Din gratis ejendel er brugt &middot; tegn medlemskab for at registrere
+          flere
+        </span>
+      )}
+
       {atLimit && canAddItems && (
         <span className="w-full text-[13px] text-muted sm:w-auto">
           {itemCount} af {includedItems} brugt &middot; ekstra ejendele koster{" "}
@@ -37,11 +47,13 @@ export function AddItemTrigger({
         onClick={onOpen}
         disabled={atLimit || !canAddItems}
         title={
-          !canAddItems
-            ? "Dit medlemskab er ikke aktivt. Gennemfør betalingen for at oprette ejendele."
-            : atLimit
-              ? `Dit medlemskab inkluderer ${includedItems} ejendele. Brug "Tilkøb ejendel" for at oprette flere.`
-              : undefined
+          free && atLimit
+            ? "Din gratis ejendel er brugt. Tegn et medlemskab for at registrere flere."
+            : !canAddItems
+              ? "Dit medlemskab er ikke aktivt. Gennemfør betalingen for at oprette ejendele."
+              : atLimit
+                ? `Dit medlemskab inkluderer ${includedItems} ejendele. Brug "Tilkøb ejendel" for at oprette flere.`
+                : undefined
         }
         className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-orange px-5 text-[15px] font-medium text-white transition-colors hover:bg-orange-dark disabled:cursor-not-allowed disabled:bg-line disabled:text-muted disabled:hover:bg-line sm:h-10 sm:w-auto"
       >

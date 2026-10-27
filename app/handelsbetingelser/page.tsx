@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { COMPANY } from "@/lib/legal";
-import { PLANS } from "@/lib/plans";
+import { FREE_ITEMS, PLANS } from "@/lib/plans";
 
 import {
   Callout,
@@ -62,6 +62,16 @@ export default function TermsPage() {
           Registrerer du flere end dit medlemskab inkluderer, koster hver
           ekstra ejendel {privat.extraItemPrice} kr./md. på privat og{" "}
           {erhverv.extraItemPrice} kr./md. på erhverv.
+        </p>
+        <p>
+          {/* Every account, whatever its status — can_create_item() in the
+              migrations. Not limited to bikes, even if the offer says bike. */}
+          Uden medlemskab kan du oprette en gratis konto og registrere{" "}
+          {FREE_ITEMS === 1 ? "én ejendel" : `${FREE_ITEMS} ejendele`}, fx din
+          cykel. Det koster intet, kræver intet betalingskort og løber ikke ud.
+          Vil du registrere flere, skal du tegne et medlemskab. Har du oprettet
+          dig gratis, betaler du ikke oprettelsesgebyr, kun den månedlige
+          pris. Det du allerede har registreret, følger med.
         </p>
         <Callout>
           Beløbet følger antallet. Sletter du en ejendel igen, falder
