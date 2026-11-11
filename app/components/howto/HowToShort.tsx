@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import type { Audience } from "@/lib/audience-shared";
 
-import { Frame, SerialChip } from "./ExampleCard";
+import { Frame, KeyCode, SerialChip } from "./ExampleCard";
 import { FEATURED, STEPS } from "./examples";
 
 const HEADINGS: Record<Audience, string> = {
@@ -14,6 +14,9 @@ const HEADINGS: Record<Audience, string> = {
 /** Short version of /se-hvordan, shown next to the plan card on /priser. */
 export function HowToShort({ audience }: { audience: Audience }) {
   const example = FEATURED[audience];
+  const photos = example.photos.slice(0, 3);
+  // Two photos get taller frames, so they fill the row a third would have.
+  const pair = photos.length === 2;
 
   return (
     <aside className="rounded-sm bg-white px-6 py-2 text-left shadow-xl shadow-navy/5 ">
@@ -41,13 +44,17 @@ export function HowToShort({ audience }: { audience: Audience }) {
       </ol>
 
       <figure className="mt-7 border-t border-line pt-6">
-        <div className="grid grid-cols-3 gap-2">
-          {example.photos.slice(0, 3).map((photo) => (
+        <div className={`grid gap-2 ${pair ? "grid-cols-2" : "grid-cols-3"}`}>
+          {photos.map((photo) => (
             <Frame
               key={photo.src}
               photo={photo}
-              className="aspect-square"
-              sizes="(min-width: 1024px) 10vw, 30vw"
+              className={pair ? "aspect-[4/5]" : "aspect-square"}
+              sizes={
+                pair
+                  ? "(min-width: 1024px) 16vw, 45vw"
+                  : "(min-width: 1024px) 10vw, 30vw"
+              }
             />
           ))}
         </div>
@@ -56,6 +63,12 @@ export function HowToShort({ audience }: { audience: Audience }) {
             Eksempel: {example.title}
           </span>
           {example.serial && <SerialChip {...example.serial} />}
+          {example.code && (
+            <span className="flex items-center gap-2 text-[13px] text-muted">
+              Tast
+              <KeyCode code={example.code} />
+            </span>
+          )}
         </figcaption>
       </figure>
 

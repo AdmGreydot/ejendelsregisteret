@@ -18,7 +18,7 @@ import { HowToPlanCard } from "../components/howto/HowToPlanCard";
 export const metadata: Metadata = {
   title: "Se hvordan du opretter dine ejendele | Ejendelsregisteret",
   description:
-    "Tag 2 til 4 billeder, fotografér serienummeret og registrér nummeret. Se eksempler med elværktøj, iPhone og keramik.",
+    "Tag 2 til 4 billeder, fotografér serienummeret og registrér nummeret. Se eksempler med elværktøj, iPhone og computer.",
   alternates: { canonical: "/se-hvordan" },
 };
 
@@ -108,6 +108,7 @@ export default function SeeHowPage() {
             <div className="mt-10 space-y-6">
               <ExampleCard example={EXAMPLES.blower} />
               <ExampleCard example={EXAMPLES.iphone} flip />
+              <ExampleCard example={EXAMPLES.computer} />
             </div>
 
             <div className="mt-10 flex items-start gap-4 rounded-sm border-l-2 border-orange bg-white px-6 py-5">

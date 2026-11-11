@@ -22,7 +22,7 @@ export default async function Home() {
       <Navbar />
       <main>
         {isErhverv ? <BusinessHero /> : <Hero plan={plan} />}
-        <SerialSection />
+        <SerialSection audience={audience} />
         <ProtectBanner />
         <HowItWorks />
         <LostSomething />

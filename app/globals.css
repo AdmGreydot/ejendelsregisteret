@@ -114,14 +114,3 @@ body {
   background-size: cover;
   background-position: center;
 }
-
-/* Produktbillede uden tekst ovenpå — ingen mørkning.
-   Billedet er kvadratisk og rammen 4:3, så `cover` beskærer i toppen og
-   bunden. Stelnummeret sidder midt i billedet og overlever beskæringen —
-   skiftes billedet ud, skal motivet stadig ligge i midten. */
-.photo-cykel {
-  background-color: #5b5b5c;
-  background-image: url("/images/cykel-stel.webp");
-  background-size: cover;
-  background-position: center;
-}

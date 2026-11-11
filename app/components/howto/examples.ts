@@ -54,6 +54,24 @@ export const EXAMPLES = {
       },
     ],
   },
+  computer: {
+    id: "computer",
+    category: "Computer",
+    title: "Lenovo bærbar",
+    body: "Serienummeret står på mærkaten under computeren, efter “S/N”. På en Lenovo kan du også scanne eSupport-koden ved tastaturet, så vises nummeret på skærmen. Tag et billede af hele computeren og et tæt på mærkaten.",
+    photos: [
+      {
+        src: `${IMG}/computer.jpg`,
+        alt: "Lenovo bærbar computer set oppefra",
+        position: "40% center",
+      },
+      {
+        src: `${IMG}/computer-maerkat.jpg`,
+        alt: "Mærkat med eSupport QR-kode ved tastaturet på Lenovo bærbar",
+        position: "64% center",
+      },
+    ],
+  },
   floorVase: {
     id: "humlebaek-gulvvase",
     category: "Indbo",
@@ -121,6 +139,17 @@ export const STEPS: Record<Audience, Step[]> = {
 
 /** The example shown next to the prices. */
 export const FEATURED: Record<Audience, Example> = {
-  privat: EXAMPLES.floorVase,
+  // The phone itself first, then the screen where the number is found.
+  privat: {
+    ...EXAMPLES.iphone,
+    photos: [
+      {
+        src: `${IMG}/phone-1.jpeg`,
+        alt: "iPhone liggende på et bord",
+        position: "center 70%",
+      },
+      ...EXAMPLES.iphone.photos,
+    ],
+  },
   erhverv: EXAMPLES.blower,
 };
